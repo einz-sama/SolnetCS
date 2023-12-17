@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">SolnetCS</string>
+    <string name="prompt_lupa">LUPA KATA SANDI</string>
+    <string name="login">MASUK</string>
+    <string name="login_text">Masuk ke Aplikasi</string>
+    <string name="username_text">Masukkan Username</string>
+    <string name="username">Usermame</string>
+    <string name="password_text">Kata Sandi</string>
+    <string name="password_info">Masukkan Kata Sandi</string>
+</resources>
