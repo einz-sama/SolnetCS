@@ -5,7 +5,8 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.einz.solnetcs.data.Repository
-import com.einz.solnetcs.ui.auth.LoginViewModel
+import com.einz.solnetcs.ui.auth.login.LoginViewModel
+import com.einz.solnetcs.ui.auth.register.RegisterViewModel
 import com.einz.solnetcs.ui.cust.CustomerViewModel
 
 
@@ -19,6 +20,9 @@ class ViewModelFactory private constructor(private val repository: Repository) :
             }
             modelClass.isAssignableFrom(CustomerViewModel::class.java) -> {
                 return CustomerViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(RegisterViewModel::class.java) -> {
+                return RegisterViewModel(repository) as T
             }
 
 

@@ -9,5 +9,15 @@
     <color name="red">#FF0000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="lightpurple">#8692f7</color>
-    <color name="lightgrey">#F8F8F8</color>
+    <color name="lightgrey">#565469</color>
+
+
+    <color name="solnet_blue_800">#075190</color>
+    <color name="solnet_blue_600">#357FBE</color>
+    <color name="solnet_blue_300">#96BDDE</color>
+
+    <color name="solnet_orange_700">#C26107</color>
+    <color name="solnet_orange_400">#D27936</color>
+
+    <color name="danger">#CC2727</color>
 </resources>

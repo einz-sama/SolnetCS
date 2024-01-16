@@ -7,4 +7,19 @@
     <string name="username">Usermame</string>
     <string name="password_text">Kata Sandi</string>
     <string name="password_info">Masukkan Kata Sandi</string>
+    <string name="LoginText">Masuk</string>
+    <string name="imageview_login">Logo Solnet\n</string>
+    <string name="icon_username">ikon user\n</string>
+    <string name="text_email">Email</string>
+    <string name="password">Password</string>
+    <string name="icon_password">Ikon Password</string>
+    <string name="forgot_password">Lupa Password?</string>
+    <string name="register">Daftar</string>
+    <string name="text_fullname">Nama Lengkap</string>
+    <string name="text_alamat">Alamat</string>
+    <string name="text_idPelanggan">6 digit ID Pelanggan</string>
+    <string name="text_phone">Nomor Telpon</string>
+    <string name="text_info_id">Lihat nomor ID Pelanggan SOLNET yang tertera pada tagihan Anda \n Contoh: SI-TP123456</string>
+    <string name="text_passwordConfirm">Tulis ulang Password</string>
+    <string name="text_password">Password</string>
 </resources>

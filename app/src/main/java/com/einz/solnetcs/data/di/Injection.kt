@@ -5,7 +5,6 @@ import com.einz.solnetcs.data.remote.retrofit.ApiConfig
 
 object Injection {
     fun provideRepository(context: Context) : Repository {
-        val apiService = ApiConfig.getApiService()
-        return Repository(apiService, context)
+        return Repository(context)
     }
 }
