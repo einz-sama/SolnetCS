@@ -1,10 +1,10 @@
 package com.einz.solnetcs.data.model
 
 data class Customer(
-    val idCustomer : Int,
-    val email: String,
-    val namaCustomer : String,
-    val alamatCustomer : String,
-    val daerahCustomer : String,
-    val noTelpCustomer : Int,
+    val idCustomer : Int = 999999,
+    val email: String = "fulan@mail,com",
+    val namaCustomer : String = "fulan",
+    val alamatCustomer : String = "jalan null",
+    val daerahCustomer : String = "null",
+    val noTelpCustomer : Int = 999999999,
 )

@@ -12,6 +12,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SolnetCS">
         <activity
+            android:name=".ui.cust.FaqActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.chat.CustChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.cust.HelpdeskActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.cust.SettingActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.cust.NewTicketActivity"
             android:exported="false" />
         <activity
@@ -22,7 +34,7 @@
             android:exported="false" />
         <activity
             android:name=".ui.auth.splash.SplashActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,9 +46,7 @@
             android:exported="false" />
         <activity
             android:name=".ui.auth.login.LoginActivity"
-            android:exported="false">
-
-        </activity>
+            android:exported="false" />
     </application>
 
 </manifest>

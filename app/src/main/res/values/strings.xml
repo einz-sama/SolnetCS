@@ -22,4 +22,12 @@
     <string name="text_info_id">Lihat nomor ID Pelanggan SOLNET yang tertera pada tagihan Anda \n Contoh: SI-TP123456</string>
     <string name="text_passwordConfirm">Tulis ulang Password</string>
     <string name="text_password">Password</string>
+    <string name="prompt_pengaduan">Mohon maaf atas ketidaknyamananya. Mohon laporkan masalah atau gangguan yang ada alami agar dapat dilakukan perbaikan</string>
+    <string name="text_deskripsi">Jelaskan Gangguan</string>
+    <string name="text_info_kedatangan">Diperkirakan waktu kedatangan teknisi \n Pukul 23:00 dan 00:00</string>
+    <string name="text_teknisi">Laporan Anda sedang diproses</string>
+    <string name="text_progress">Menunggu Teknisi</string>
+    <string name="laporan">Pengaduan Laporan</string>
+    <string name="faq">Pertanyaan Umum</string>
+    <string name="contact">Hubungi Kami</string>
 </resources>
