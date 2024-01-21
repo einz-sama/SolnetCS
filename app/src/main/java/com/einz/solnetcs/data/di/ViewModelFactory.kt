@@ -7,8 +7,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.einz.solnetcs.data.Repository
 import com.einz.solnetcs.ui.auth.login.LoginViewModel
 import com.einz.solnetcs.ui.auth.register.RegisterViewModel
-import com.einz.solnetcs.ui.cust.CustomerViewModel
-import com.einz.solnetcs.ui.cust.NewTicketViewModel
+import com.einz.solnetcs.ui.cust.active_ticket.ActiveTicketViewModel
+import com.einz.solnetcs.ui.cust.customer.CustomerViewModel
+import com.einz.solnetcs.ui.cust.new_ticket.NewTicketViewModel
 
 
 class ViewModelFactory private constructor(private val repository: Repository) :
@@ -27,6 +28,9 @@ class ViewModelFactory private constructor(private val repository: Repository) :
             }
             modelClass.isAssignableFrom(NewTicketViewModel::class.java) -> {
                 return NewTicketViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(ActiveTicketViewModel::class.java) -> {
+                return ActiveTicketViewModel(repository) as T
             }
 
 

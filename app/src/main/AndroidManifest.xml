@@ -12,25 +12,34 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SolnetCS">
         <activity
-            android:name=".ui.cust.FaqActivity"
+            android:name=".ui.cust.setting.ChangePhoneActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.cust.setting.ChangeAlamatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.cust.setting.ChangePasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.cust.info.FaqActivity"
             android:exported="false" />
         <activity
             android:name=".ui.chat.CustChatActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.cust.HelpdeskActivity"
+            android:name=".ui.cust.helpdesk.HelpdeskActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.cust.SettingActivity"
+            android:name=".ui.cust.setting.SettingActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.cust.NewTicketActivity"
+            android:name=".ui.cust.new_ticket.NewTicketActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.cust.ActiveTicketActivity"
+            android:name=".ui.cust.active_ticket.ActiveTicketActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.cust.CustomerActivity"
+            android:name=".ui.cust.customer.CustomerActivity"
             android:exported="false" />
         <activity
             android:name=".ui.auth.splash.SplashActivity"

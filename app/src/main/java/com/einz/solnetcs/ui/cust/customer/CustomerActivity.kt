@@ -1,4 +1,4 @@
-package com.einz.solnetcs.ui.cust
+package com.einz.solnetcs.ui.cust.customer
 
 import android.content.DialogInterface
 import android.content.Intent
@@ -9,13 +9,16 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import com.einz.solnetcs.data.LoginPreferences
 import com.einz.solnetcs.data.di.ViewModelFactory
 import com.einz.solnetcs.databinding.ActivityCustomerBinding
 import com.einz.solnetcs.data.Result
 import com.einz.solnetcs.data.model.Customer
 import com.einz.solnetcs.ui.auth.login.LoginActivity
-import com.google.firebase.auth.FirebaseAuth
+import com.einz.solnetcs.ui.cust.active_ticket.ActiveTicketActivity
+import com.einz.solnetcs.ui.cust.info.FaqActivity
+import com.einz.solnetcs.ui.cust.helpdesk.HelpdeskActivity
+import com.einz.solnetcs.ui.cust.new_ticket.NewTicketActivity
+import com.einz.solnetcs.ui.cust.setting.SettingActivity
 
 class CustomerActivity : AppCompatActivity() {
 
@@ -159,6 +162,7 @@ class CustomerActivity : AppCompatActivity() {
 
                 }
                 is Result.Error -> {
+                    showLoading(false)
                     Log.d("CustomerActivity", "Error: ${result.errorMessage}")
                 }
                 is Result.Loading -> {

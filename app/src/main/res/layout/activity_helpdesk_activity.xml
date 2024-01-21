@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.cust.HelpdeskActivity"
+    tools:context=".ui.cust.helpdesk.HelpdeskActivity"
     android:background="@drawable/androidsmall_22">
 
   <ImageView
@@ -215,6 +215,16 @@
       app:layout_constraintEnd_toEndOf="@id/view3"
       app:layout_constraintStart_toEndOf="@id/img_bot"
       app:layout_constraintTop_toBottomOf="@+id/tv_bot" />
+
+  <ProgressBar
+      android:id="@+id/progressBar"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:visibility="gone"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
 
 
   </androidx.constraintlayout.widget.ConstraintLayout>

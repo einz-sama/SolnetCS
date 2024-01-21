@@ -1,4 +1,4 @@
-package com.einz.solnetcs.ui.cust
+package com.einz.solnetcs.ui.cust.new_ticket
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -10,7 +10,6 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.viewModels
-import com.einz.solnetcs.R
 import com.einz.solnetcs.data.di.ViewModelFactory
 import com.einz.solnetcs.databinding.ActivityNewTicketBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -19,6 +18,7 @@ import com.einz.solnetcs.data.model.FirebaseTimestamp
 import com.einz.solnetcs.data.model.Laporan
 import com.einz.solnetcs.data.model.gangguan
 import com.einz.solnetcs.ui.auth.login.LoginActivity
+import com.einz.solnetcs.ui.cust.active_ticket.ActiveTicketActivity
 import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -80,9 +80,9 @@ class NewTicketActivity : AppCompatActivity() {
             var idLaporan = ""
 
             var idDaerah = if (daerahCustomer == "Tanjungpinang") {
-                "TP"
+                "SI/TP"
             } else {
-                "BTN"
+                "SI/BTN"
             }
 
             val currentTime = Calendar.getInstance().time

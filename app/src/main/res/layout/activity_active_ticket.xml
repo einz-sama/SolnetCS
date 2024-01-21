@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.cust.ActiveTicketActivity"
+    tools:context=".ui.cust.active_ticket.ActiveTicketActivity"
     android:background="@drawable/androidsmall_23">
 
     <TextView
@@ -76,7 +76,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
         android:text="No Referensi/Ticket"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:fontFamily="@font/ubuntu_regular"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -90,7 +90,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
         android:text="SI/TP/123456890"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:fontFamily="@font/ubuntu_bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -104,7 +104,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
         android:text="Jenis Gangguan"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:fontFamily="@font/ubuntu_regular"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -118,7 +118,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
         android:text="Internet terputus"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:fontFamily="@font/ubuntu_bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -129,6 +129,7 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_marginTop="20dp"
+
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/menu_background"
@@ -147,7 +148,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:text="@string/text_teknisi"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:fontFamily="@font/ubuntu_bold"
         android:textAlignment="center"
         android:textColor="@color/black"
@@ -163,7 +164,7 @@
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:text="@string/text_progress"
@@ -191,6 +192,7 @@
         android:layout_width="3dp"
         android:layout_height="150dp"
         android:layout_marginStart="42dp"
+        android:layout_marginTop="16dp"
         android:background="@color/solnet_orange_400"
         android:backgroundTint="@color/solnet_orange_400"
         app:layout_constraintStart_toStartOf="@id/progress_container"
@@ -200,18 +202,20 @@
         android:id="@+id/progress_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"
         app:background="@drawable/menu_background"
-        app:layout_constraintTop_toBottomOf="@id/view2"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:orientation="vertical">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view2"
+        app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/progress_0"
             android:layout_width="match_parent"
-            android:layout_height="50dp">
+            android:layout_height="50dp"
+            android:layout_marginTop="16dp">
 
             <View
                 android:id="@+id/dot_progress_0"
@@ -220,31 +224,31 @@
                 android:layout_marginStart="32dp"
                 android:background="@drawable/progress_dot"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tv_progress_0"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Laporan Anda Sedang diproses"
                 android:fontFamily="@font/ubuntu_medium"
+                android:text="Laporan Anda Sedang diproses"
                 android:textSize="16sp"
-                app:layout_constraintStart_toEndOf="@id/dot_progress_0"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tv_progress_0_timestamp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
-                android:text="12/12/2020 12:12"
                 android:fontFamily="@font/ubuntu_regular"
+                android:text=""
                 android:textSize="14sp"
-                android:visibility="gone"
-                app:layout_constraintStart_toEndOf="@id/dot_progress_0"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/dot_progress_0"
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -260,31 +264,30 @@
                 android:layout_marginStart="32dp"
                 android:background="@drawable/progress_dot_inactive"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tv_progress_1"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Proses Perbaikan"
                 android:fontFamily="@font/ubuntu_medium"
+                android:text="Proses Perbaikan"
                 android:textSize="16sp"
-                app:layout_constraintStart_toEndOf="@id/dot_progress_1"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tv_progress_1_timestamp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
-                android:text="12/12/2020 12:12"
                 android:fontFamily="@font/ubuntu_regular"
+                android:text=""
                 android:textSize="14sp"
-                android:visibility="gone"
-                app:layout_constraintStart_toEndOf="@id/dot_progress_1"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/dot_progress_1" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -300,31 +303,30 @@
                 android:layout_marginStart="32dp"
                 android:background="@drawable/progress_dot_inactive"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tv_progress_2"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Hasil Perbaikan"
                 android:fontFamily="@font/ubuntu_medium"
+                android:text="Hasil Perbaikan"
                 android:textSize="16sp"
-                app:layout_constraintStart_toEndOf="@id/dot_progress_2"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tv_progress_2_timestamp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
-                android:text="12/12/2020 12:12"
                 android:fontFamily="@font/ubuntu_regular"
+                android:text=""
                 android:textSize="14sp"
-                android:visibility="gone"
-                app:layout_constraintStart_toEndOf="@id/dot_progress_2"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/dot_progress_2" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -340,7 +342,7 @@
                 android:layout_marginStart="32dp"
                 android:background="@drawable/progress_dot_inactive"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tv_progress_3"
@@ -351,7 +353,7 @@
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/dot_progress_3"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -359,17 +361,33 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
-                android:text="12/12/2020 12:12"
                 android:fontFamily="@font/ubuntu_regular"
+                android:text=""
                 android:textSize="14sp"
-                android:visibility="gone"
-                app:layout_constraintStart_toEndOf="@id/dot_progress_3"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/dot_progress_3" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_confirm"
+        android:layout_width="300dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/button_primary"
+        android:text="Konfirmasi Perbaikan Selesai"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/progress_container" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_chat"
@@ -382,6 +400,16 @@
         app:tint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 

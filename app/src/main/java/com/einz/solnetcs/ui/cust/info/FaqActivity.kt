@@ -1,4 +1,4 @@
-package com.einz.solnetcs.ui.cust
+package com.einz.solnetcs.ui.cust.info
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

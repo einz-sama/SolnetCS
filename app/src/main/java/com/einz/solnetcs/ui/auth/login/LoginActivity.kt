@@ -11,10 +11,8 @@ import androidx.activity.viewModels
 import com.einz.solnetcs.data.di.ViewModelFactory
 import com.einz.solnetcs.databinding.ActivityLoginBinding
 import com.einz.solnetcs.ui.auth.register.RegisterActivity
-import com.einz.solnetcs.util.checkPassword
-import com.einz.solnetcs.util.checkUsername
 import com.einz.solnetcs.data.Result
-import com.einz.solnetcs.ui.cust.CustomerActivity
+import com.einz.solnetcs.ui.cust.customer.CustomerActivity
 import com.einz.solnetcs.util.ErrorDialog
 
 class LoginActivity : AppCompatActivity() {

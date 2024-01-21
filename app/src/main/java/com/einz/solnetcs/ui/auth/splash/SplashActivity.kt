@@ -6,11 +6,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
-import com.einz.solnetcs.R
-import com.einz.solnetcs.data.remote.responses.Login
 import com.einz.solnetcs.databinding.ActivitySplashBinding
 import com.einz.solnetcs.ui.auth.login.LoginActivity
-import com.einz.solnetcs.ui.cust.CustomerActivity
+import com.einz.solnetcs.ui.cust.customer.CustomerActivity
 import com.google.firebase.auth.FirebaseAuth
 
 class SplashActivity : AppCompatActivity() {

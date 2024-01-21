@@ -1,4 +1,4 @@
-package com.einz.solnetcs.ui.cust
+package com.einz.solnetcs.ui.cust.customer
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

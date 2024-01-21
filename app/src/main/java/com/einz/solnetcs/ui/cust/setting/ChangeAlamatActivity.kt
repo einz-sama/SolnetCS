@@ -1,12 +1,12 @@
-package com.einz.solnetcs.ui.cust
+package com.einz.solnetcs.ui.cust.setting
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.einz.solnetcs.R
 
-class ActiveTicketActivity : AppCompatActivity() {
+class ChangeAlamatActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_active_ticket)
+        setContentView(R.layout.activity_change_alamat)
     }
 }

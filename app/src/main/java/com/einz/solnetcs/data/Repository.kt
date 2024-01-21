@@ -26,6 +26,7 @@ class Repository(private val context: Context) {
     val createLaporanLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
     val getLaporanLiveData: MutableLiveData<Result<Laporan?>> = MutableLiveData()
     val checkLaporanLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
+    val laporanDoneLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
 
     init {
         if (firebaseAuth.currentUser != null) {
@@ -140,7 +141,7 @@ class Repository(private val context: Context) {
                 .startAt(0.toDouble())
                 .endBefore(4.toDouble()) // Exclude status 4
 
-            query.addListenerForSingleValueEvent(object : ValueEventListener {
+            query.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         // Find the first matching Laporan with status not equal to 4
@@ -155,16 +156,51 @@ class Repository(private val context: Context) {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    customerLiveData.postValue(Result.Error(error.message))
+                    getLaporanLiveData.postValue(Result.Error(error.message))
                 }
             })
         } catch (e: Exception) {
             getLaporanLiveData.postValue(Result.Error(e.message ?: "Unknown error"))
         }
-
     }
 
-    suspend fun checkActiveLaporanByIdCust(idCustomer: String){
+
+    suspend fun updateLaporanStatus(idCustomer: String, idLaporan: String, newStatus: Int) {
+        laporanDoneLiveData.postValue(Result.Loading)
+        try {
+            val databaseReference = FirebaseDatabase.getInstance().getReference("reports").child(idCustomer)
+
+            databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        for (reportSnapshot in snapshot.children) {
+                            val laporan = reportSnapshot.getValue(Laporan::class.java)
+                            if (laporan?.idLaporan == idLaporan) {
+                                reportSnapshot.ref.updateChildren(mapOf("status" to newStatus))
+                                    .addOnSuccessListener {
+                                        laporanDoneLiveData.postValue(Result.Success(true))
+                                    }
+                                    .addOnFailureListener {
+                                        laporanDoneLiveData.postValue(Result.Error("Update laporan failed"))
+                                    }
+                                break // Exit the loop once the correct laporan is found and updated
+                            }
+                        }
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Handle database error
+                    laporanDoneLiveData.postValue(Result.Error(databaseError.message))
+                }
+            })
+        } catch (e: Exception) {
+            // Handle any exceptions
+            laporanDoneLiveData.postValue(Result.Error(e.message ?: "Unknown error"))
+        }
+    }
+
+    suspend fun checkActiveLaporanByIdCust(idCustomer: String) {
         checkLaporanLiveData.postValue(Result.Loading)
 
         try {
@@ -175,7 +211,7 @@ class Repository(private val context: Context) {
                 .startAt(0.toDouble())
                 .endBefore(4.toDouble()) // Exclude status 4
 
-            query.addListenerForSingleValueEvent(object : ValueEventListener {
+            query.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         // Find the first matching Laporan with status not equal to 4
@@ -196,8 +232,10 @@ class Repository(private val context: Context) {
         } catch (e: Exception) {
             checkLaporanLiveData.postValue(Result.Error(e.message ?: "Unknown error"))
         }
-
     }
+
+
+
 
 
 }
