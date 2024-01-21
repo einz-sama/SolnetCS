@@ -25,6 +25,7 @@ class Repository(private val context: Context) {
 
     val createLaporanLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
     val getLaporanLiveData: MutableLiveData<Result<Laporan?>> = MutableLiveData()
+    val checkLaporanLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
 
     init {
         if (firebaseAuth.currentUser != null) {
@@ -128,7 +129,7 @@ class Repository(private val context: Context) {
         }
     }
 
-    suspend fun getActiveLaporanByIdCust(idCustomer: String): Result<Laporan?> {
+    suspend fun getActiveLaporanByIdCust(idCustomer: String) {
         getLaporanLiveData.postValue(Result.Loading)
 
         try {
@@ -161,8 +162,41 @@ class Repository(private val context: Context) {
             getLaporanLiveData.postValue(Result.Error(e.message ?: "Unknown error"))
         }
 
-        // In a real implementation, you might return the result here, but for LiveData usage, it's posted inside the listener.
-        return Result.Loading
+    }
+
+    suspend fun checkActiveLaporanByIdCust(idCustomer: String){
+        checkLaporanLiveData.postValue(Result.Loading)
+
+        try {
+            val databaseReference = FirebaseDatabase.getInstance().getReference("reports")
+
+            val query = databaseReference.child(idCustomer)
+                .orderByChild("status")
+                .startAt(0.toDouble())
+                .endBefore(4.toDouble()) // Exclude status 4
+
+            query.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        // Find the first matching Laporan with status not equal to 4
+                        val laporan: Laporan? = snapshot.children
+                            .mapNotNull { it.getValue(Laporan::class.java) }
+                            .firstOrNull { it.status != 4 }
+
+                        checkLaporanLiveData.postValue(Result.Success(true))
+                    } else {
+                        checkLaporanLiveData.postValue(Result.Success(false))
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    checkLaporanLiveData.postValue(Result.Error(error.message))
+                }
+            })
+        } catch (e: Exception) {
+            checkLaporanLiveData.postValue(Result.Error(e.message ?: "Unknown error"))
+        }
+
     }
 
 

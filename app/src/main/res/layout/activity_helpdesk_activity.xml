@@ -47,16 +47,18 @@
 
   <ImageView
       android:id="@+id/img_laporan"
-      android:layout_width="64dp"
-      android:layout_height="64dp"
+      android:layout_width="32dp"
+      android:layout_height="32dp"
+      android:layout_marginStart="16dp"
       android:layout_marginTop="32dp"
-      android:layout_marginStart="8dp"
       android:src="@drawable/ic_laporan"
-      app:tint="@color/solnet_orange_400"
+      android:visibility="gone"
       app:layout_constraintBottom_toBottomOf="@id/view1"
+      app:layout_constraintEnd_toEndOf="@id/view1"
+      app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="@id/view1"
       app:layout_constraintTop_toTopOf="@id/helpdesk"
-      app:layout_constraintEnd_toStartOf="@id/tv_laporan"/>
+      app:tint="@color/solnet_orange_400" />
 
   <TextView
       android:id="@+id/tv_laporan"
@@ -78,11 +80,14 @@
       android:id="@+id/btn_laporan"
       android:layout_width="250dp"
       android:layout_height="40dp"
-      android:layout_marginTop="10dp"
       android:layout_marginBottom="70dp"
       android:background="@drawable/button_secondary"
       android:text="@string/laporan"
       android:textColor="@color/solnet_blue_800"
+      android:layout_marginTop="10dp"
+      android:paddingStart="16dp"
+      android:drawableStart="@drawable/ic_laporan"
+      android:drawableTint="@color/solnet_orange_400"
       android:textSize="14sp"
       android:textStyle="bold"
       android:fontFamily="@font/ubuntu_regular"
@@ -104,15 +109,17 @@
 
   <ImageView
       android:id="@+id/img_faq"
-      android:layout_width="64dp"
-      android:layout_height="64dp"
+      android:layout_width="32dp"
+      android:layout_height="32dp"
+      android:layout_marginStart="16dp"
       android:layout_marginTop="32dp"
-      android:layout_marginStart="8dp"
       android:src="@drawable/info"
+      android:visibility="gone"
       app:layout_constraintBottom_toBottomOf="@id/view2"
+      app:layout_constraintEnd_toEndOf="@id/view2"
+      app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="@id/view2"
-      app:layout_constraintTop_toTopOf="@id/view2"
-      app:layout_constraintEnd_toStartOf="@id/tv_faq"/>
+      app:layout_constraintTop_toTopOf="@id/view2" />
 
   <TextView
       android:id="@+id/tv_faq"
@@ -138,6 +145,8 @@
       android:layout_marginBottom="70dp"
       android:background="@drawable/button_secondary"
       android:text="@string/faq"
+      android:paddingStart="16dp"
+      android:drawableStart="@drawable/info"
       android:textColor="@color/solnet_blue_800"
       android:textSize="14sp"
       android:textStyle="bold"
@@ -160,15 +169,17 @@
 
   <ImageView
       android:id="@+id/img_bot"
-      android:layout_width="64dp"
-      android:layout_height="64dp"
+      android:layout_width="32dp"
+      android:layout_height="32dp"
+      android:layout_marginStart="16dp"
       android:layout_marginTop="32dp"
-      android:layout_marginStart="8dp"
       android:src="@drawable/help"
+      android:visibility="gone"
       app:layout_constraintBottom_toBottomOf="@id/view3"
+      app:layout_constraintEnd_toEndOf="@id/view1"
+      app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="@id/view3"
-      app:layout_constraintTop_toTopOf="@id/view3"
-      app:layout_constraintEnd_toStartOf="@id/tv_bot"/>
+      app:layout_constraintTop_toTopOf="@id/view3" />
 
   <TextView
       android:id="@+id/tv_bot"
@@ -195,6 +206,9 @@
       android:background="@drawable/button_secondary"
       android:text="@string/contact"
       android:textColor="@color/solnet_blue_800"
+      android:paddingStart="16dp"
+      android:drawableStart="@drawable/helpdesk"
+      android:drawableTint="@color/solnet_blue_800"
       android:textSize="14sp"
       android:textStyle="bold"
       android:fontFamily="@font/ubuntu_regular"

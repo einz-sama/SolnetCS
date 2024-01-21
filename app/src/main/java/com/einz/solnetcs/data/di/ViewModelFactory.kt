@@ -8,6 +8,7 @@ import com.einz.solnetcs.data.Repository
 import com.einz.solnetcs.ui.auth.login.LoginViewModel
 import com.einz.solnetcs.ui.auth.register.RegisterViewModel
 import com.einz.solnetcs.ui.cust.CustomerViewModel
+import com.einz.solnetcs.ui.cust.NewTicketViewModel
 
 
 class ViewModelFactory private constructor(private val repository: Repository) :
@@ -24,6 +25,10 @@ class ViewModelFactory private constructor(private val repository: Repository) :
             modelClass.isAssignableFrom(RegisterViewModel::class.java) -> {
                 return RegisterViewModel(repository) as T
             }
+            modelClass.isAssignableFrom(NewTicketViewModel::class.java) -> {
+                return NewTicketViewModel(repository) as T
+            }
+
 
 
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)

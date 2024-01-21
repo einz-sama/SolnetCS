@@ -1,5 +1,6 @@
 package com.einz.solnetcs.ui.cust
 
+import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,18 +8,25 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import com.einz.solnetcs.data.LoginPreferences
 import com.einz.solnetcs.data.di.ViewModelFactory
 import com.einz.solnetcs.databinding.ActivityCustomerBinding
 import com.einz.solnetcs.data.Result
+import com.einz.solnetcs.data.model.Customer
 import com.einz.solnetcs.ui.auth.login.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 
 class CustomerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCustomerBinding
+
     private lateinit var factory: ViewModelFactory
     private val viewModel: CustomerViewModel by viewModels{factory}
+
+    private var cachedCustomerData: Customer? = null
+
+    private lateinit var idCustomer: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,39 +35,45 @@ class CustomerActivity : AppCompatActivity() {
 
         factory = ViewModelFactory.getInstance(this)
 
-        viewModel.getCustomer()
-        viewModel.customerLiveData.observe(this){
-            result ->
-            when(result){
-                is Result.Success -> {
-                    binding.apply{
-                        var header = "SI-TP"
-                        header = if(result.data?.daerahCustomer.equals("Tanjungpinang")){
-                            "SI-TP"
-                        } else{
-                            "SI-BTN"
+        if (cachedCustomerData == null) {
+            viewModel.getCustomer()
+            viewModel.customerLiveData.observe(this){
+                    result ->
+                when(result){
+                    is Result.Success -> {
+                        cachedCustomerData = result.data
+                        binding.apply{
+                            var header = "SI-TP"
+                            header = if(result.data?.daerahCustomer.equals("Tanjungpinang")){
+                                "SI-TP"
+                            } else{
+                                "SI-BTN"
+                            }
+                            idCustomer = result.data?.idCustomer.toString()
+                            welcome.text = "Selamat Datang"
+                            username.text = result.data?.namaCustomer
+                            idPelanggan.text = "ID PELANGGAN: ${header}${result.data?.idCustomer}"
+                            alamat.text = "ALAMAT: ${result.data?.alamatCustomer}"
+                            daerah.text = "DAERAH: ${result.data?.daerahCustomer}"
+                            telepon.text = "TELEPON: ${result.data?.noTelpCustomer}"
+                            showLoading(false)
                         }
-
-                        welcome.text = "Selamat Datang"
-                        username.text = result.data?.namaCustomer
-                        idPelanggan.text = "ID PELANGGAN: ${header}${result.data?.idCustomer}"
-                        alamat.text = "ALAMAT: ${result.data?.alamatCustomer}"
-                        daerah.text = "DAERAH: ${result.data?.daerahCustomer}"
-                        telepon.text = "TELEPON: ${result.data?.noTelpCustomer}"
+                    }
+                    is Result.Error -> {
+                        Log.d("CustomerActivity", "Error: ${result.errorMessage}")
                         showLoading(false)
                     }
-                }
-                is Result.Error -> {
-                    Log.d("CustomerActivity", "Error: ${result.errorMessage}")
-                    showLoading(false)
-                }
-                is Result.Loading -> {
-                    showLoading(true)
-                }
+                    is Result.Loading -> {
+                        showLoading(true)
+                        Log.d("CustomerActivity", "Loading...")
+                    }
 
-                else -> {
-                    Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show()}
+                    else -> {
+                        Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show()}
+                }
             }
+        } else {
+            binding.progressBar.visibility = View.GONE
         }
 
         binding.logout.setOnClickListener(){
@@ -84,6 +98,76 @@ class CustomerActivity : AppCompatActivity() {
                     else -> {
                         Toast.makeText(this, "Logout Failed", Toast.LENGTH_SHORT).show()}
                 }
+            }
+        }
+
+        binding.apply{
+
+            ticket.setOnClickListener(){
+                viewModel.checkLaporan(idCustomer)
+            }
+            helpdesk.setOnClickListener(){
+                val intent = Intent(this@CustomerActivity, HelpdeskActivity::class.java)
+                startActivity(intent)
+            }
+            setting.setOnClickListener(){
+                val intent = Intent(this@CustomerActivity, SettingActivity::class.java)
+                startActivity(intent)
+            }
+            logout.setOnClickListener {
+                // Create a confirmation dialog
+                val builder = AlertDialog.Builder(this@CustomerActivity)
+                builder.setTitle("Konfirmasi Keluar")
+                builder.setMessage("Apakah anda yakin untuk keluar akun?")
+
+                // Set a positive button (Yes action)
+                builder.setPositiveButton("Iya") { _: DialogInterface, _: Int ->
+                    // User confirmed, perform the logout action
+                    viewModel.logout()
+                }
+
+                // Set a negative button (Cancel action)
+                builder.setNegativeButton("Batal") { dialog: DialogInterface, _: Int ->
+                    // User canceled, dismiss the dialog
+                    dialog.dismiss()
+                }
+
+                // Create and show the dialog
+                val dialog = builder.create()
+                dialog.show()
+            }
+            info.setOnClickListener(){
+                val intent = Intent(this@CustomerActivity, FaqActivity::class.java)
+                startActivity(intent)
+            }
+
+
+        }
+
+        viewModel.checkLaporanLiveData.observe(this){
+            result ->
+            when(result){
+                is Result.Success -> {
+                    showLoading(false)
+                    if(result.data == true){
+                        val intent = Intent(this@CustomerActivity, ActiveTicketActivity::class.java)
+                        startActivity(intent)
+                    } else{
+                        val intent = Intent(this@CustomerActivity, NewTicketActivity::class.java)
+                        startActivity(intent)
+                    }
+
+                }
+                is Result.Error -> {
+                    Log.d("CustomerActivity", "Error: ${result.errorMessage}")
+                }
+                is Result.Loading -> {
+                    showLoading(true)
+                }
+
+                else -> {
+                    showLoading(false)
+                    Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show()}
             }
         }
 

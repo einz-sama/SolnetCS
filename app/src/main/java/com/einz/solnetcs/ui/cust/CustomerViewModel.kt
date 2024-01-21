@@ -10,6 +10,8 @@ class CustomerViewModel(private val repository: Repository): ViewModel() {
     val customerLiveData = repository.customerLiveData
     val loggedOutLiveData = repository.loggedOutLiveData
 
+    val checkLaporanLiveData = repository.checkLaporanLiveData
+
     fun getCustomer(){
         viewModelScope.launch {
             repository.getCustomerData()
@@ -19,6 +21,12 @@ class CustomerViewModel(private val repository: Repository): ViewModel() {
     fun logout(){
         viewModelScope.launch {
             repository.logout()
+        }
+    }
+
+    fun checkLaporan(idCust:String){
+        viewModelScope.launch {
+            repository.checkActiveLaporanByIdCust(idCust)
         }
     }
 
