@@ -395,9 +395,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
-        android:backgroundTint="@color/solnet_blue_600"
-        android:src="@drawable/ic_chat"
-        app:tint="@color/white"
+        android:backgroundTint="@color/white"
+        android:src="@drawable/whatsapp"
+        app:tint="@color/whatsapp_green"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

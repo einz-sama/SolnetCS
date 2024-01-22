@@ -13,5 +13,6 @@ data class Laporan(
     val desiredTime:FirebaseTimestamp? = null,
     val timestamp: FirebaseTimestamp? = null,
     val teknisi:String?="",
-    val messages:List<Message>?=null
+    val messages:List<Message>?=null,
+    val teknisiPhone:String?= whatsapp
 )

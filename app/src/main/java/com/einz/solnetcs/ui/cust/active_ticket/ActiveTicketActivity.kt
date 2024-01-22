@@ -1,6 +1,7 @@
 package com.einz.solnetcs.ui.cust.active_ticket
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -12,6 +13,7 @@ import com.einz.solnetcs.data.di.ViewModelFactory
 import com.einz.solnetcs.databinding.ActivityActiveTicketBinding
 import com.einz.solnetcs.ui.cust.customer.CustomerViewModel
 import com.einz.solnetcs.data.Result
+import com.einz.solnetcs.data.model.whatsapp
 import com.einz.solnetcs.ui.auth.login.LoginActivity
 import com.einz.solnetcs.ui.chat.CustChatActivity
 import com.einz.solnetcs.ui.cust.customer.CustomerActivity
@@ -26,6 +28,7 @@ class ActiveTicketActivity : AppCompatActivity() {
 
     private lateinit var idCustomer: String
     private lateinit var idLaporan:String
+    private lateinit var teknisiPhone:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -196,7 +199,9 @@ class ActiveTicketActivity : AppCompatActivity() {
         }
 
         binding.fabChat.setOnClickListener {
-            val intent = Intent(this, CustChatActivity::class.java)
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.setPackage("com.whatsapp")
+            intent.data = Uri.parse("https://wa.me/$whatsapp")
             startActivity(intent)
         }
 

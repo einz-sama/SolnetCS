@@ -10,6 +10,7 @@ import com.einz.solnetcs.ui.auth.register.RegisterViewModel
 import com.einz.solnetcs.ui.cust.active_ticket.ActiveTicketViewModel
 import com.einz.solnetcs.ui.cust.customer.CustomerViewModel
 import com.einz.solnetcs.ui.cust.new_ticket.NewTicketViewModel
+import com.einz.solnetcs.ui.cust.setting.SettingViewModel
 
 
 class ViewModelFactory private constructor(private val repository: Repository) :
@@ -31,6 +32,9 @@ class ViewModelFactory private constructor(private val repository: Repository) :
             }
             modelClass.isAssignableFrom(ActiveTicketViewModel::class.java) -> {
                 return ActiveTicketViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(SettingViewModel::class.java) -> {
+                return SettingViewModel(repository) as T
             }
 
 

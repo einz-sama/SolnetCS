@@ -23,6 +23,10 @@ class Repository(private val context: Context) {
     val loginSuccessLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
     val loggedOutLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
 
+    val changePasswordLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
+    val changeAlamatLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
+    val changePhoneLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
+
     val createLaporanLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
     val getLaporanLiveData: MutableLiveData<Result<Laporan?>> = MutableLiveData()
     val checkLaporanLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
@@ -232,6 +236,57 @@ class Repository(private val context: Context) {
         } catch (e: Exception) {
             checkLaporanLiveData.postValue(Result.Error(e.message ?: "Unknown error"))
         }
+    }
+
+    fun changePassword(newPassword: String) {
+        val user: FirebaseUser? = firebaseAuth.currentUser
+        changePasswordLiveData.postValue(Result.Loading)
+
+        user?.let {
+            it.updatePassword(newPassword)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        // Password change successful
+                        changePasswordLiveData.postValue(Result.Success(true))
+                    } else {
+                        // Password change failed
+                        changePasswordLiveData.postValue(Result.Error(task.exception?.message ?: "Failed to update password."))
+                    }
+                }
+        } ?: run {
+            // User is not signed in or user data is not available
+            changePasswordLiveData.postValue(Result.Error("No signed-in user."))
+        }
+    }
+
+    fun changeAlamat(idCustomer: String, newAlamat: String) {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("customers")
+        changeAlamatLiveData.postValue(Result.Loading)
+
+        databaseReference.child(idCustomer).updateChildren(mapOf("alamatCustomer" to newAlamat))
+            .addOnSuccessListener {
+                // Update successful
+                changeAlamatLiveData.postValue(Result.Success(true))
+            }
+            .addOnFailureListener { exception ->
+                // Update failed
+                changeAlamatLiveData.postValue(Result.Error(exception.message ?: "Update alamat failed"))
+            }
+    }
+
+    fun changePhone(idCustomer: String, newPhoneNumber: String) {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("customers")
+        changePhoneLiveData.postValue(Result.Loading)
+
+        databaseReference.child(idCustomer).updateChildren(mapOf("noTelpCustomer" to newPhoneNumber))
+            .addOnSuccessListener {
+                // Update successful
+                changePhoneLiveData.postValue(Result.Success(true))
+            }
+            .addOnFailureListener { exception ->
+                // Update failed
+                changePhoneLiveData.postValue(Result.Error(exception.message ?: "Update phone number failed"))
+            }
     }
 
 
