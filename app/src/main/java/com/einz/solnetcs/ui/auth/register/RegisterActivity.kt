@@ -49,7 +49,7 @@ class RegisterActivity : AppCompatActivity() {
                     name,
                     address,
                     location,
-                    phone.toInt()
+                    phone
                 )
                 viewModel.register(dataCust, password)
             }

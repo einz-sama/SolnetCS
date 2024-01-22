@@ -79,28 +79,27 @@ class CustomerActivity : AppCompatActivity() {
             binding.progressBar.visibility = View.GONE
         }
 
-        binding.logout.setOnClickListener(){
-            viewModel.logout()
-            viewModel.loggedOutLiveData.observe(this){
-                    result ->
-                when(result){
-                    is Result.Success -> {
+
+        viewModel.loggedOutLiveData.observe(this){
+                result ->
+            when(result){
+                is Result.Success -> {
+                    if(result.data == true){
                         Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show()
                         val intent = Intent(this, LoginActivity::class.java)
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         startActivity(intent)
                         finish()
                     }
-                    is Result.Error -> {
-                        Log.d("CustomerActivity", "Error: ${result.errorMessage}")
-                    }
-                    is Result.Loading -> {
-                        showLoading(true)
-                    }
 
-                    else -> {
-                        Toast.makeText(this, "Logout Failed", Toast.LENGTH_SHORT).show()}
                 }
+                is Result.Error -> {
+                    Log.d("CustomerActivity", "Error: ${result.errorMessage}")
+                }
+                is Result.Loading -> {
+                    showLoading(true)
+                }
+
             }
         }
 

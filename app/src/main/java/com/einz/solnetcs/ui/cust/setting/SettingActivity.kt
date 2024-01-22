@@ -76,10 +76,13 @@ class SettingActivity : AppCompatActivity() {
             result ->
             when(result){
                 is Result.Success -> {
-                    val intent = Intent(this, LoginActivity::class.java)
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                    startActivity(intent)
-                    finish()
+                    if(result.data == true){
+                        val intent = Intent(this, LoginActivity::class.java)
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        startActivity(intent)
+                        finish()
+                    }
+
                 }
                 is Result.Error -> {
                     Toast.makeText(this, "Gagal keluar akun", Toast.LENGTH_SHORT).show()

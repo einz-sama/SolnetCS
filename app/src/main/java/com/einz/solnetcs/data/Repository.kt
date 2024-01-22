@@ -76,6 +76,7 @@ class Repository(private val context: Context) {
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         userLiveData.postValue(Result.Success(firebaseAuth.currentUser))
+                        loggedOutLiveData.postValue(Result.Success(false))
                     } else {
                         userLiveData.postValue(Result.Error(task.exception?.message ?: "Login failed"))
                     }
@@ -86,8 +87,10 @@ class Repository(private val context: Context) {
     }
 
     suspend fun logout() {
-        firebaseAuth.signOut()
         loggedOutLiveData.postValue(Result.Success(true))
+        firebaseAuth.signOut()
+
+
     }
     suspend fun getCustomerData() {
         customerLiveData.postValue(Result.Loading)

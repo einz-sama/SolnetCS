@@ -6,5 +6,5 @@ data class Customer(
     val namaCustomer : String = "fulan",
     val alamatCustomer : String = "jalan null",
     val daerahCustomer : String = "null",
-    val noTelpCustomer : Int = 999999999,
+    val noTelpCustomer : String = "999999999",
 )
