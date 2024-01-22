@@ -59,34 +59,35 @@ class HelpdeskActivity : AppCompatActivity() {
             binding.progressBar.visibility = View.GONE
         }
 
-        viewModel.checkLaporanLiveData.observe(this){
-                result ->
-            when(result){
-                is Result.Success -> {
-                    binding.progressBar.visibility = View.GONE
-                    if(result.data == true){
-                        val intent = Intent(this@HelpdeskActivity, ActiveTicketActivity::class.java)
-                        startActivity(intent)
-                    } else{
-                        val intent = Intent(this@HelpdeskActivity, NewTicketActivity::class.java)
-                        startActivity(intent)
-                    }
 
-                }
-                is Result.Error -> {
-                    binding.progressBar.visibility = View.GONE
-                    Log.d("CustomerActivity", "Error: ${result.errorMessage}")
-                }
-                is Result.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                }
-
-                }
-        }
 
         binding.apply{
             btnLaporan.setOnClickListener {
                 viewModel.checkLaporan(idCustomer)
+                viewModel.checkLaporanLiveData.observe(this@HelpdeskActivity){
+                        result ->
+                    when(result){
+                        is Result.Success -> {
+                            binding.progressBar.visibility = View.GONE
+                            if(result.data == true){
+                                val intent = Intent(this@HelpdeskActivity, ActiveTicketActivity::class.java)
+                                startActivity(intent)
+                            } else{
+                                val intent = Intent(this@HelpdeskActivity, NewTicketActivity::class.java)
+                                startActivity(intent)
+                            }
+
+                        }
+                        is Result.Error -> {
+                            binding.progressBar.visibility = View.GONE
+                            Log.d("CustomerActivity", "Error: ${result.errorMessage}")
+                        }
+                        is Result.Loading -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                        }
+
+                    }
+                }
             }
             btnFaq.setOnClickListener {
                 val intent = Intent(this@HelpdeskActivity, FaqActivity::class.java)
