@@ -39,7 +39,7 @@ class LoginActivity : AppCompatActivity() {
                     result ->
                 when(result){
                     is Result.Success -> {
-                        loginSuccess()
+                        viewModel.getCustomer()
                     }
                     is Result.Error -> {
                         showError(result.errorMessage)
@@ -51,6 +51,21 @@ class LoginActivity : AppCompatActivity() {
                     else -> {
                         Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show()}
                 }
+            }
+            viewModel.customerLiveData.observe(this){
+                    result1 ->
+                when(result1){
+                    is Result.Success -> {
+                        loginSuccess()
+                    }
+                    is Result.Error -> {
+                        showError(result1.errorMessage)
+                    }
+                    is Result.Loading -> {
+                        showLoading(true)
+                    }
+                }
+
             }
         }
 
@@ -66,7 +81,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun checkInput(){
     val textEmail = binding.tfEditEmail.text?.trim().toString()
-    val textPassword = binding.tfEditPassword.text?.trim().toString()
+     val textPassword = binding.tfEditPassword.text?.trim().toString()
 
             if(android.util.Patterns.EMAIL_ADDRESS.matcher(textEmail).matches()){
                 if(textPassword.length>7){
@@ -111,6 +126,7 @@ class LoginActivity : AppCompatActivity() {
             binding.progressBar.visibility = View.GONE
         }
     }
+
 
     private fun loginSuccess() {
         binding.progressBar.visibility = View.GONE

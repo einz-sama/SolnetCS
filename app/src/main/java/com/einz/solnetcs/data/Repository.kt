@@ -76,7 +76,7 @@ class Repository(private val context: Context) {
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         userLiveData.postValue(Result.Success(firebaseAuth.currentUser))
-                        loggedOutLiveData.postValue(Result.Success(false))
+                        loggedOutLiveData.postValue(Result.Error("Logged in"))
                     } else {
                         userLiveData.postValue(Result.Error(task.exception?.message ?: "Login failed"))
                     }
@@ -105,6 +105,7 @@ class Repository(private val context: Context) {
                                 val customer = userSnapshot.getValue(Customer::class.java)
                                 customer?.let {
                                     customerLiveData.postValue(Result.Success(it))
+                                    loggedOutLiveData.postValue(Result.Error("Logged in"))
                                 }
                             }
                         } else {
