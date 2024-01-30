@@ -12,7 +12,9 @@ data class Laporan(
     val status:Int=0,
     val desiredTime:FirebaseTimestamp? = null,
     val timestamp: FirebaseTimestamp? = null,
+    val customerPhone: String? = "",
     val teknisi:String?="",
     val messages:List<Message>?=null,
-    val teknisiPhone:String?= whatsapp
+    val teknisiPhone:String?= whatsapp,
+    val idTeknisi:Int=0
 )

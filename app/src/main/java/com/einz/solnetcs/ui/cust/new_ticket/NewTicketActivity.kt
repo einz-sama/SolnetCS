@@ -36,6 +36,7 @@ class NewTicketActivity : AppCompatActivity() {
     private lateinit var idCustomer: String
     private lateinit var daerahCustomer: String
     private lateinit var alamatCustomer: String
+    private lateinit var telponCustomer: String
 
     private lateinit var kategoriKeluhan:String
     private lateinit var deskripsiKeluhan:String
@@ -56,6 +57,7 @@ class NewTicketActivity : AppCompatActivity() {
                     idCustomer = result.data?.idCustomer.toString()
                     daerahCustomer = result.data?.daerahCustomer.toString()
                     alamatCustomer = result.data?.alamatCustomer.toString()
+                    telponCustomer = result.data?.noTelpCustomer.toString()
 
                 }
                 is Result.Error -> {
@@ -102,6 +104,7 @@ class NewTicketActivity : AppCompatActivity() {
                 0,
                 waktuKeluhan,
                 firebaseTimestampNow,
+                telponCustomer,
                 "",
                 null
             )

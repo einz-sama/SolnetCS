@@ -24,6 +24,7 @@ import com.einz.solnetcs.ui.cust.info.FaqActivity
 import com.einz.solnetcs.ui.cust.helpdesk.HelpdeskActivity
 import com.einz.solnetcs.ui.cust.new_ticket.NewTicketActivity
 import com.einz.solnetcs.ui.cust.setting.SettingActivity
+import com.einz.solnetcs.util.observeOnce
 
 class CustomerActivity : AppCompatActivity() {
 
@@ -37,19 +38,6 @@ class CustomerActivity : AppCompatActivity() {
     private lateinit var idCustomer: String
 
 
-    private val viewModelLifecycleObserver = object : DefaultLifecycleObserver {
-        override fun onResume(owner: LifecycleOwner) {
-            super.onResume(owner)
-            addObservers()
-        }
-
-        override fun onPause(owner: LifecycleOwner) {
-            super.onPause(owner)
-            removeObservers()
-        }
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCustomerBinding.inflate(layoutInflater)
@@ -57,17 +45,114 @@ class CustomerActivity : AppCompatActivity() {
 
         factory = ViewModelFactory.getInstance(this)
 
-        lifecycle.addObserver(viewModelLifecycleObserver)
 
 
         viewModel.getCustomer()
 
+        viewModel.customerLiveData.observe(this@CustomerActivity) { result ->
+            when(result){
+                is Result.Success -> {
+                    cachedCustomerData = result.data
+                    binding.apply{
+                        var header = "SI-TP"
+                        header = if(result.data?.daerahCustomer.equals("Tanjungpinang")){
+                            "SI-TP"
+                        } else{
+                            "SI-BTN"
+                        }
+                        idCustomer = result.data?.idCustomer.toString()
+                        welcome.text = "Selamat Datang"
+                        username.text = result.data?.namaCustomer
+                        idPelanggan.text = "ID PELANGGAN: ${header}${result.data?.idCustomer}"
+                        alamat.text = "ALAMAT: ${result.data?.alamatCustomer}"
+                        daerah.text = "DAERAH: ${result.data?.daerahCustomer}"
+                        telepon.text = "TELEPON: ${result.data?.noTelpCustomer}"
+                        showLoading(false)
+                        setupViews()
+                    }
+                }
+                is Result.Error -> {
+                    Log.d("CustomerActivity", "Error: ${result.errorMessage}")
+                    showLoading(false)
+                }
+                is Result.Loading -> {
+                    showLoading(true)
+                    Log.d("CustomerActivity", "Loading...")
+                }
+
+                else -> {
+                    Toast.makeText(this@CustomerActivity, "Login Failed", Toast.LENGTH_SHORT).show()}
+            }
+        }
+
+        viewModel.loggedOutLiveData.observe(this){
+                result ->
+            when(result){
+                is Result.Success -> {
+                    if(result.data == true){
+                        val intent = Intent(this, LoginActivity::class.java)
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                        startActivity(intent)
+                        finish()
+                    }
+
+                }
+                is Result.Error -> {
+
+                }
+                is Result.Loading -> {
+                    Log.d("SettingActivity", "Loading")
+                }
+            }
+        }
 
 
+
+
+
+
+    }
+
+
+    private fun showLoading(state: Boolean) {
+        if (state) {
+            binding.progressBar.visibility = View.VISIBLE
+        } else {
+            binding.progressBar.visibility = View.GONE
+        }
+    }
+
+    private fun setupViews(){
         binding.apply{
 
             ticket.setOnClickListener(){
                 viewModel.checkLaporan(idCustomer)
+                viewModel.checkLaporanLiveData.observeOnce(this@CustomerActivity) { result ->
+                    when(result){
+                        is Result.Success -> {
+                            showLoading(false)
+                            if(result.data == true){
+                                val intent = Intent(this@CustomerActivity, ActiveTicketActivity::class.java)
+                                startActivity(intent)
+                            } else{
+                                val intent = Intent(this@CustomerActivity, NewTicketActivity::class.java)
+                                startActivity(intent)
+                            }
+
+                        }
+                        is Result.Error -> {
+                            showLoading(false)
+                            Log.d("CustomerActivity", "Error: ${result.errorMessage}")
+                        }
+                        is Result.Loading -> {
+                            showLoading(true)
+                        }
+
+                        else -> {
+                            showLoading(false)
+                            Toast.makeText(this@CustomerActivity, "Login Failed", Toast.LENGTH_SHORT).show()}
+                    }
+                }
             }
             helpdesk.setOnClickListener(){
                 val intent = Intent(this@CustomerActivity, HelpdeskActivity::class.java)
@@ -105,106 +190,6 @@ class CustomerActivity : AppCompatActivity() {
             }
 
 
-        }
-
-    }
-
-    private fun addObservers() {
-        viewModel.customerLiveData.observe(this@CustomerActivity) { result ->
-            when(result){
-                is Result.Success -> {
-                    cachedCustomerData = result.data
-                    binding.apply{
-                        var header = "SI-TP"
-                        header = if(result.data?.daerahCustomer.equals("Tanjungpinang")){
-                            "SI-TP"
-                        } else{
-                            "SI-BTN"
-                        }
-                        idCustomer = result.data?.idCustomer.toString()
-                        welcome.text = "Selamat Datang"
-                        username.text = result.data?.namaCustomer
-                        idPelanggan.text = "ID PELANGGAN: ${header}${result.data?.idCustomer}"
-                        alamat.text = "ALAMAT: ${result.data?.alamatCustomer}"
-                        daerah.text = "DAERAH: ${result.data?.daerahCustomer}"
-                        telepon.text = "TELEPON: ${result.data?.noTelpCustomer}"
-                        showLoading(false)
-                    }
-                }
-                is Result.Error -> {
-                    Log.d("CustomerActivity", "Error: ${result.errorMessage}")
-                    showLoading(false)
-                }
-                is Result.Loading -> {
-                    showLoading(true)
-                    Log.d("CustomerActivity", "Loading...")
-                }
-
-                else -> {
-                    Toast.makeText(this@CustomerActivity, "Login Failed", Toast.LENGTH_SHORT).show()}
-            }
-        }
-
-        viewModel.loggedOutLiveData.observe(this@CustomerActivity) { result ->
-            when(result){
-                is Result.Success -> {
-                    if(result.data == true){
-
-                        val intent = Intent(this@CustomerActivity, LoginActivity::class.java)
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                        startActivity(intent)
-                        finish()
-                    }
-
-                }
-                is Result.Error -> {
-                    Log.d("CustomerActivity", "Error: ${result.errorMessage}")
-                }
-                is Result.Loading -> {
-                    showLoading(true)
-                }
-
-            }
-        }
-
-        viewModel.checkLaporanLiveData.observe(this@CustomerActivity) { result ->
-            when(result){
-                is Result.Success -> {
-                    showLoading(false)
-                    if(result.data == true){
-                        val intent = Intent(this@CustomerActivity, ActiveTicketActivity::class.java)
-                        startActivity(intent)
-                    } else{
-                        val intent = Intent(this@CustomerActivity, NewTicketActivity::class.java)
-                        startActivity(intent)
-                    }
-
-                }
-                is Result.Error -> {
-                    showLoading(false)
-                    Log.d("CustomerActivity", "Error: ${result.errorMessage}")
-                }
-                is Result.Loading -> {
-                    showLoading(true)
-                }
-
-                else -> {
-                    showLoading(false)
-                    Toast.makeText(this@CustomerActivity, "Login Failed", Toast.LENGTH_SHORT).show()}
-            }
-        }
-    }
-
-    private fun removeObservers() {
-        viewModel.customerLiveData.removeObservers(this@CustomerActivity)
-        viewModel.loggedOutLiveData.removeObservers(this@CustomerActivity)
-        viewModel.checkLaporanLiveData.removeObservers(this@CustomerActivity)
-    }
-    private fun showLoading(state: Boolean) {
-        if (state) {
-            binding.progressBar.visibility = View.VISIBLE
-        } else {
-            binding.progressBar.visibility = View.GONE
         }
     }
 

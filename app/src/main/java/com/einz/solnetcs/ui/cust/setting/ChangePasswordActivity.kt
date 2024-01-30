@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.ViewModel
 import com.einz.solnetcs.R
@@ -59,6 +61,7 @@ class ChangePasswordActivity : AppCompatActivity() {
                 when(result){
                     is Result.Success -> {
                         binding.progressBar.visibility = View.GONE
+                        viewModel.logout()
                         val intent = Intent(this, LoginActivity::class.java)
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         startActivity(intent)
@@ -66,6 +69,8 @@ class ChangePasswordActivity : AppCompatActivity() {
                     }
                     is Result.Error -> {
                         binding.progressBar.visibility = View.GONE
+                        Toast.makeText(this, "Mohon login ulang untuk merubah sandi", Toast.LENGTH_SHORT).show()
+                        Log.d("ChangePasswordActivity", "onCreate: ${result.errorMessage}")
                     }
                     is Result.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE

@@ -8,7 +8,10 @@ import kotlinx.coroutines.launch
 
 class NewTicketViewModel(private val repository: Repository): ViewModel() {
 
-    val createLaporanLiveData = repository.createLaporanLiveData
+    private val _createLaporanLiveData = repository.createLaporanLiveData
+    val createLaporanLiveData = _createLaporanLiveData
+
+    private val _customerLiveData = repository.customerLiveData
     val customerLiveData = repository.customerLiveData
 
     fun createLaporan(idCust: String, laporan: Laporan){

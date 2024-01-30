@@ -85,7 +85,7 @@ class SettingActivity : AppCompatActivity() {
 
                 }
                 is Result.Error -> {
-                    Toast.makeText(this, "Gagal keluar akun", Toast.LENGTH_SHORT).show()
+
                 }
                 is Result.Loading -> {
                     Log.d("SettingActivity", "Loading")

@@ -8,7 +8,8 @@ import kotlinx.coroutines.launch
 
 class RegisterViewModel(private val repository: Repository): ViewModel() {
 
-    val userLiveData = repository.registerSuccessLiveData
+    private val _userLiveData = repository.registerSuccessLiveData
+    val userLiveData = _userLiveData
 
     fun register(user: Customer, textPassword: String){
         viewModelScope.launch {

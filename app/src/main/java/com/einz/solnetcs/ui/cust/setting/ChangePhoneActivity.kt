@@ -91,7 +91,7 @@ class ChangePhoneActivity : AppCompatActivity() {
         binding.tfEditPhone.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(string: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(string: CharSequence?, start: Int, before: Int, count: Int) {
-                checkInput()
+                checkValid()
             }
             override fun afterTextChanged(string: Editable?) {}
         })

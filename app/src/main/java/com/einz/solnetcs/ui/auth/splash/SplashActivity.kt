@@ -16,7 +16,7 @@ class SplashActivity : AppCompatActivity() {
     private lateinit var binding : ActivitySplashBinding
     private val firebaseAuth : FirebaseAuth = FirebaseAuth.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
-super.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

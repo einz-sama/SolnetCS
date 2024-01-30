@@ -18,6 +18,7 @@ class Repository(private val context: Context) {
 
     val userLiveData: MutableLiveData<Result<FirebaseUser?>> = MutableLiveData()
     val customerLiveData: MutableLiveData<Result<Customer?>> = MutableLiveData()
+    val checkCustomerLiveData: MutableLiveData<Result<Customer?>> = MutableLiveData()
 
     val registerSuccessLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
     val loginSuccessLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
@@ -122,6 +123,36 @@ class Repository(private val context: Context) {
         }
     }
 
+    suspend fun checkCustomerData() {
+        checkCustomerLiveData.postValue(Result.Loading)
+        try {
+            val userEmail = firebaseAuth.currentUser?.email ?: return
+            val databaseReference = FirebaseDatabase.getInstance().getReference("customers")
+            databaseReference.orderByChild("email").equalTo(userEmail)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            for (userSnapshot in snapshot.children) {
+                                val customer = userSnapshot.getValue(Customer::class.java)
+                                customer?.let {
+                                    checkCustomerLiveData.postValue(Result.Success(it))
+                                    loggedOutLiveData.postValue(Result.Error("Logged in"))
+                                }
+                            }
+                        } else {
+                            checkCustomerLiveData.postValue(Result.Error("Customer not found"))
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        checkCustomerLiveData.postValue(Result.Error(error.message))
+                    }
+                })
+        } catch (e: Exception) {
+            checkCustomerLiveData.postValue(Result.Error(e.message ?: "Unknown error"))
+        }
+    }
+
     suspend fun createLaporan(idCustomer: String, laporan: Laporan) {
         createLaporanLiveData.postValue(Result.Loading)
         try {
@@ -175,41 +206,54 @@ class Repository(private val context: Context) {
 
     suspend fun updateLaporanStatus(idCustomer: String, idLaporan: String, newStatus: Int) {
         laporanDoneLiveData.postValue(Result.Loading)
-        try {
-            val databaseReference = FirebaseDatabase.getInstance().getReference("reports").child(idCustomer)
+        val reportRef = FirebaseDatabase.getInstance().getReference("reports/$idCustomer/$idLaporan")
 
-            databaseReference.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        for (reportSnapshot in snapshot.children) {
-                            val laporan = reportSnapshot.getValue(Laporan::class.java)
-                            if (laporan?.idLaporan == idLaporan) {
-                                reportSnapshot.ref.updateChildren(mapOf("status" to newStatus))
-                                    .addOnSuccessListener {
-                                        laporanDoneLiveData.postValue(Result.Success(true))
+        // Update the Laporan status
+        reportRef.child("status").setValue(newStatus)
+            .addOnSuccessListener {
+                // Successfully updated the Laporan, now fetch the Laporan to get idTeknisi
+                reportRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val laporan = snapshot.getValue(Laporan::class.java)
+                        val idTeknisi = laporan?.idTeknisi
+
+                        if (idTeknisi != null) {
+                            // Now, find and update the Teknisi's activeIdLaporan to null
+                            val teknisiRef = FirebaseDatabase.getInstance().getReference("techs").orderByChild("idTeknisi").equalTo(idTeknisi.toDouble())
+                            teknisiRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                                override fun onDataChange(teknisiSnapshot: DataSnapshot) {
+                                    for (teknisiChild in teknisiSnapshot.children) {
+                                        teknisiChild.ref.child("activeIdLaporan").setValue(null)
+                                            .addOnSuccessListener {
+                                                laporanDoneLiveData.postValue(Result.Success(true))
+                                            }
+                                            .addOnFailureListener { e ->
+                                                laporanDoneLiveData.postValue(Result.Error("Failed to clear Teknisi active Laporan ID: ${e.message}"))
+                                            }
                                     }
-                                    .addOnFailureListener {
-                                        laporanDoneLiveData.postValue(Result.Error("Update laporan failed"))
-                                    }
-                                break // Exit the loop once the correct laporan is found and updated
-                            }
+                                }
+
+                                override fun onCancelled(teknisiDbError: DatabaseError) {
+                                    laporanDoneLiveData.postValue(Result.Error("Database error on Teknisi lookup: ${teknisiDbError.message}"))
+                                }
+                            })
+                        } else {
+                            laporanDoneLiveData.postValue(Result.Error("No Teknisi ID found in Laporan"))
                         }
                     }
-                }
 
-                override fun onCancelled(databaseError: DatabaseError) {
-                    // Handle database error
-                    laporanDoneLiveData.postValue(Result.Error(databaseError.message))
-                }
-            })
-        } catch (e: Exception) {
-            // Handle any exceptions
-            laporanDoneLiveData.postValue(Result.Error(e.message ?: "Unknown error"))
-        }
+                    override fun onCancelled(dbError: DatabaseError) {
+                        laporanDoneLiveData.postValue(Result.Error("Database error on Laporan lookup: ${dbError.message}"))
+                    }
+                })
+            }
+            .addOnFailureListener { e ->
+                laporanDoneLiveData.postValue(Result.Error("Failed to update Laporan status: ${e.message}"))
+            }
     }
 
     suspend fun checkActiveLaporanByIdCust(idCustomer: String) {
-        checkLaporanLiveData.postValue(Result.Loading)
+//        checkLaporanLiveData.postValue(Result.Loading)
 
         try {
             val databaseReference = FirebaseDatabase.getInstance().getReference("reports")
@@ -293,7 +337,64 @@ class Repository(private val context: Context) {
             }
     }
 
+    fun finishLaporan(idLaporan: String, newStatus: Int = 3) {
+//        laporanDoneLiveData.postValue(Result.Loading)
 
+        // Step 1: Find and update the Laporan status
+        val reportsReference = db.getReference("reports")
+        reportsReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(reportsSnapshot: DataSnapshot) {
+                var laporanFound = false
+
+                reportsLoop@ for (customerSnapshot in reportsSnapshot.children) {
+                    for (reportSnapshot in customerSnapshot.children) {
+                        val laporan = reportSnapshot.getValue(Laporan::class.java)
+                        if (laporan?.idLaporan == idLaporan) {
+                            // Update Laporan status
+                            reportSnapshot.ref.child("status").setValue(newStatus)
+
+                            val idTeknisi = laporan.idTeknisi
+                            if (idTeknisi != null) {
+                                // Step 2: Fetch and update Teknisi
+                                val teknisiReference = db.getReference("techs")
+                                teknisiReference.orderByChild("idTeknisi").equalTo(idTeknisi.toDouble()).addListenerForSingleValueEvent(object : ValueEventListener {
+                                    override fun onDataChange(teknisiSnapshot: DataSnapshot) {
+                                        if (teknisiSnapshot.exists()) {
+                                            for (childSnapshot in teknisiSnapshot.children) {
+                                                // Set activeIdLaporan to null or remove the property
+                                                childSnapshot.ref.child("activeIdLaporan").removeValue() // or setValue(null)
+                                            }
+                                            laporanDoneLiveData.postValue(Result.Success(true))
+                                        } else {
+                                            laporanDoneLiveData.postValue(Result.Error("Teknisi not found"))
+                                        }
+                                    }
+
+                                    override fun onCancelled(databaseError: DatabaseError) {
+                                        laporanDoneLiveData.postValue(Result.Error(databaseError.message))
+                                    }
+                                })
+                            }
+                            laporanFound = true
+                            break@reportsLoop
+                        }
+                    }
+                }
+
+                if (!laporanFound) {
+                    laporanDoneLiveData.postValue(Result.Error("Laporan not found"))
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                laporanDoneLiveData.postValue(Result.Error(databaseError.message))
+            }
+        })
+    }
+
+    fun resetLaporanDone(){
+        laporanDoneLiveData.postValue(Result.Loading)
+    }
 
 
 

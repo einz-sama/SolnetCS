@@ -14,9 +14,14 @@ class LoginViewModel(private val repository: Repository): ViewModel() {
     private val _responseLogin = repository.userLiveData
     val responseLogin: MutableLiveData<Result<FirebaseUser?>> = _responseLogin
 
+    private val _customerLiveData = repository.customerLiveData
     val customerLiveData = repository.customerLiveData
 
-    val loggedOutLiveData = repository.loggedOutLiveData
+    private val  _checkCustomerLiveData = repository.checkCustomerLiveData
+    val checkCustomerLiveData = repository.checkCustomerLiveData
+
+    private val _loggedOutLiveData = repository.loggedOutLiveData
+    val loggedOutLiveData = _loggedOutLiveData
 
 
     fun login(username : String, password : String){
@@ -29,6 +34,12 @@ class LoginViewModel(private val repository: Repository): ViewModel() {
     fun getCustomer(){
         viewModelScope.launch {
             repository.getCustomerData()
+        }
+    }
+
+    fun checkCustomer(){
+        viewModelScope.launch {
+            repository.checkCustomerData()
         }
     }
 

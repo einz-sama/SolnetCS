@@ -8,12 +8,14 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.lifecycle.Observer
 import com.einz.solnetcs.data.di.ViewModelFactory
 import com.einz.solnetcs.databinding.ActivityLoginBinding
 import com.einz.solnetcs.ui.auth.register.RegisterActivity
 import com.einz.solnetcs.data.Result
 import com.einz.solnetcs.ui.cust.customer.CustomerActivity
 import com.einz.solnetcs.util.ErrorDialog
+import com.einz.solnetcs.util.observeOnce
 
 class LoginActivity : AppCompatActivity() {
 
@@ -35,11 +37,12 @@ class LoginActivity : AppCompatActivity() {
             val email = binding.tfEditEmail.text?.trim().toString()
             val password = binding.tfEditPassword.text?.trim().toString()
             viewModel.login(email, password)
+
             viewModel.responseLogin.observe(this){
                     result ->
                 when(result){
                     is Result.Success -> {
-                        viewModel.getCustomer()
+                        viewModel.checkCustomer()
                     }
                     is Result.Error -> {
                         showError(result.errorMessage)
@@ -52,22 +55,30 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show()}
                 }
             }
-            viewModel.customerLiveData.observe(this){
-                    result1 ->
-                when(result1){
+
+            viewModel.checkCustomerLiveData.observe(this, Observer{
+                when(it){
                     is Result.Success -> {
-                        loginSuccess()
+                        showLoading(false)
+                        val intent = Intent(this, CustomerActivity::class.java)
+                        startActivity(intent)
+                        finish()
                     }
                     is Result.Error -> {
-                        showError(result1.errorMessage)
+                        showLoading(false)
+                        Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show()
                     }
                     is Result.Loading -> {
                         showLoading(true)
                     }
                 }
+            })
 
-            }
+
+
         }
+
+
 
 
 
