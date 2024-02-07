@@ -150,8 +150,8 @@ class NewTicketActivity : AppCompatActivity() {
         val availableTimes = ArrayList<String>()
 
         // Set working hours
-        val workingHoursStart = 9
-        val workingHoursEnd = 17
+        val workingHoursStart = 8
+        val workingHoursEnd = 23
 
         // Determine if we need to show today's or tomorrow's times
         var showTodayTimes = true
