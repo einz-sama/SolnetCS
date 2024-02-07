@@ -38,8 +38,18 @@ class SettingActivity : AppCompatActivity() {
             when(result){
                 is Result.Success -> {
 
-                    binding.username.text = result.data?.namaCustomer
-                    binding.idPelanggan.text = result.data?.idCustomer.toString()
+                    binding.apply{
+                        var header = "SI-TP"
+                        header = if(result.data?.daerahCustomer.equals("Tanjungpinang")){
+                            "SI-TP"
+                        } else{
+                            "SI-BTN"
+                        }
+                        idCustomer = result.data?.idCustomer.toString()
+                        welcome.text = "Selamat Datang"
+                        username.text = result.data?.namaCustomer
+                        idPelanggan.text = "ID PELANGGAN: ${header}${result.data?.idCustomer}"
+                    }
 
                 }
                 is Result.Error -> {
