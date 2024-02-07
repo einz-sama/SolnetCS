@@ -32,6 +32,28 @@ class SettingActivity : AppCompatActivity() {
 
         factory = ViewModelFactory.getInstance(this)
 
+        viewModel.getCustomer()
+        viewModel.customerLiveData.observe(this){
+            result ->
+            when(result){
+                is Result.Success -> {
+
+                    binding.username.text = result.data?.namaCustomer
+                    binding.idPelanggan.text = result.data?.idCustomer.toString()
+
+                }
+                is Result.Error -> {
+
+
+                }
+                is Result.Loading -> {
+
+
+                }
+            }
+        }
+
+
         binding.apply{
             changePassword.setOnClickListener {
                 val intent = Intent(this@SettingActivity, ChangePasswordActivity::class.java)
