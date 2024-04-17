@@ -1,27 +1,25 @@
 package com.einz.solnetcs.ui.cust.active_ticket
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.core.view.isVisible
 import com.einz.solnetcs.R
 import com.einz.solnetcs.data.di.ViewModelFactory
 import com.einz.solnetcs.databinding.ActivityActiveTicketBinding
-import com.einz.solnetcs.ui.cust.customer.CustomerViewModel
 import com.einz.solnetcs.data.Result
-import com.einz.solnetcs.data.model.whatsapp
 import com.einz.solnetcs.ui.auth.login.LoginActivity
-import com.einz.solnetcs.ui.chat.CustChatActivity
 import com.einz.solnetcs.ui.cust.customer.CustomerActivity
 import com.einz.solnetcs.util.observeOnce
 import java.text.SimpleDateFormat
 import java.util.Locale
 import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.Phone
+import com.einz.solnetcs.util.phoneValidator
 
 class ActiveTicketActivity : AppCompatActivity() {
 
@@ -62,12 +60,27 @@ class ActiveTicketActivity : AppCompatActivity() {
                                 }
 
                                 binding.fabChat.setOnClickListener {
-                                    val teknisiPhone = laporan.data?.teknisiPhone
-                                    val teknisiName = laporan.data?.teknisi
-                                    val intent = Intent(Intent.ACTION_INSERT, ContactsContract.Contacts.CONTENT_URI)
-                                    intent.putExtra(ContactsContract.Intents.Insert.PHONE, teknisiPhone)
-                                    intent.putExtra(ContactsContract.Intents.Insert.NAME, teknisiName)
-                                    startActivity(intent)
+                                    var teknisiPhone = laporan.data?.teknisiPhone
+                                    teknisiPhone = phoneValidator(this@ActiveTicketActivity,teknisiPhone!!)
+
+
+                                    try {
+                                        // Check if WhatsApp is installed
+                                        packageManager.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA)
+
+                                        // Start WhatsApp chat
+                                        val intent = Intent(Intent.ACTION_VIEW)
+                                        val whatsappUrl = "https://wa.me/$teknisiPhone" // WhatsApp's URL scheme
+                                        intent.data = Uri.parse(whatsappUrl)
+                                        startActivity(intent)
+                                    } catch (e: PackageManager.NameNotFoundException) {
+                                        // WhatsApp not installed, open Contacts app to add a new contact
+                                        val intent = Intent(Intent.ACTION_INSERT, ContactsContract.Contacts.CONTENT_URI).apply {
+                                            putExtra(ContactsContract.Intents.Insert.PHONE, teknisiPhone)
+                                            putExtra(ContactsContract.Intents.Insert.NAME, "Pelanggan")
+                                        }
+                                        startActivity(intent)
+                                    }
                                 }
 
                                 val timeStamp = laporan.data?.timestamp?.toTimestamp()?.toDate()

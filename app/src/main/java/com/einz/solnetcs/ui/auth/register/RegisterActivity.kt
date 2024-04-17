@@ -17,6 +17,7 @@ import com.einz.solnetcs.databinding.ActivityRegisterBinding
 import com.einz.solnetcs.data.Result
 import com.einz.solnetcs.ui.auth.login.LoginActivity
 import com.einz.solnetcs.util.ErrorDialog
+import com.einz.solnetcs.util.phoneValidator
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -38,7 +39,8 @@ class RegisterActivity : AppCompatActivity() {
             val email = binding.tfEditEmail.text?.trim().toString()
             val password = binding.tfEditPassword.text?.trim().toString()
             val name = binding.tfEditFullName.text?.trim().toString()
-            val phone = binding.tfEditPhone.text?.trim().toString()
+            var phone = binding.tfEditPhone.text?.trim().toString()
+            phone = phoneValidator(this@RegisterActivity, phone)
             val address = binding.tfEditAlamat.text?.trim().toString()
             val idPelanggan = binding.tfEditIdPelanggan.text?.trim().toString()
 
@@ -149,6 +151,13 @@ class RegisterActivity : AppCompatActivity() {
             isValid = false
         } else {
             binding.tfLayoutPhone.error = null
+            if( phoneValidator(this@RegisterActivity, textPhone).isEmpty() ){
+                binding.tfLayoutPhone.error = "Nomor Telepon tidak valid"
+                isValid = false
+            }
+            else{
+                binding.tfLayoutPhone.error = null
+            }
         }
 
         if (textAddress.isEmpty()) {
