@@ -9,11 +9,9 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.lifecycle.ViewModel
-import com.einz.solnetcs.R
 import com.einz.solnetcs.data.di.ViewModelFactory
 import com.einz.solnetcs.databinding.ActivityChangePasswordBinding
-import com.einz.solnetcs.data.Result
+import com.einz.solnetcs.data.State
 import com.einz.solnetcs.ui.auth.login.LoginActivity
 
 class ChangePasswordActivity : AppCompatActivity() {
@@ -36,15 +34,15 @@ class ChangePasswordActivity : AppCompatActivity() {
         viewModel.customerLiveData.observe(this){
             result ->
             when(result){
-                is Result.Success -> {
+                is State.Success -> {
                     idCustomer = result.data?.idCustomer.toString()
                     binding.progressBar.visibility = View.GONE
                 }
-                is Result.Error -> {
+                is State.Error -> {
                     binding.progressBar.visibility = View.GONE
 
                 }
-                is Result.Loading -> {
+                is State.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE
 
                 }
@@ -59,7 +57,7 @@ class ChangePasswordActivity : AppCompatActivity() {
             viewModel.changePasswordLiveData.observe(this){
                 result ->
                 when(result){
-                    is Result.Success -> {
+                    is State.Success -> {
                         binding.progressBar.visibility = View.GONE
                         viewModel.logout()
                         val intent = Intent(this, LoginActivity::class.java)
@@ -67,12 +65,12 @@ class ChangePasswordActivity : AppCompatActivity() {
                         startActivity(intent)
                         finish()
                     }
-                    is Result.Error -> {
+                    is State.Error -> {
                         binding.progressBar.visibility = View.GONE
                         Toast.makeText(this, "Mohon login ulang untuk merubah sandi", Toast.LENGTH_SHORT).show()
                         Log.d("ChangePasswordActivity", "onCreate: ${result.errorMessage}")
                     }
-                    is Result.Loading -> {
+                    is State.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
                     }
                 }

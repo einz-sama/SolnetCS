@@ -373,13 +373,30 @@
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_confirm"
+    android:id="@+id/btn_confirm"
+    android:layout_width="300dp"
+    android:layout_height="45dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginBottom="16dp"
+    android:background="@drawable/button_primary"
+    android:text="Konfirmasi Perbaikan Selesai"
+    android:textColor="@color/white"
+    android:textSize="14sp"
+    android:textStyle="bold"
+    android:visibility="gone"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/progress_container" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_done"
         android:layout_width="300dp"
         android:layout_height="45dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/button_primary"
-        android:text="Konfirmasi Perbaikan Selesai"
+        android:text="Kembali"
         android:textColor="@color/white"
         android:textSize="14sp"
         android:textStyle="bold"
@@ -388,6 +405,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/progress_container" />
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_chat"

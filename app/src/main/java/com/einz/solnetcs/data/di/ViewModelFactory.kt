@@ -9,6 +9,8 @@ import com.einz.solnetcs.ui.auth.login.LoginViewModel
 import com.einz.solnetcs.ui.auth.register.RegisterViewModel
 import com.einz.solnetcs.ui.cust.active_ticket.ActiveTicketViewModel
 import com.einz.solnetcs.ui.cust.customer.CustomerViewModel
+import com.einz.solnetcs.ui.cust.history.HistoryViewModel
+import com.einz.solnetcs.ui.cust.inactive_ticket.InactiveTicketViewModel
 import com.einz.solnetcs.ui.cust.new_ticket.NewTicketViewModel
 import com.einz.solnetcs.ui.cust.setting.SettingViewModel
 
@@ -35,6 +37,12 @@ class ViewModelFactory private constructor(private val repository: Repository) :
             }
             modelClass.isAssignableFrom(SettingViewModel::class.java) -> {
                 return SettingViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(HistoryViewModel::class.java) -> {
+                return HistoryViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(InactiveTicketViewModel::class.java) -> {
+                return InactiveTicketViewModel(repository) as T
             }
 
 

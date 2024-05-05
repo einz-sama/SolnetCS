@@ -7,7 +7,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
-import com.einz.solnetcs.data.Result
+import com.einz.solnetcs.data.State
 import com.einz.solnetcs.data.di.ViewModelFactory
 import com.einz.solnetcs.databinding.ActivityChangePhoneBinding
 
@@ -29,15 +29,15 @@ class ChangePhoneActivity : AppCompatActivity() {
         viewModel.customerLiveData.observe(this){
                 result ->
             when(result){
-                is Result.Success -> {
+                is State.Success -> {
                     idCustomer = result.data?.idCustomer.toString()
                     binding.progressBar.visibility = View.GONE
                 }
-                is Result.Error -> {
+                is State.Error -> {
                     binding.progressBar.visibility = View.GONE
 
                 }
-                is Result.Loading -> {
+                is State.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE
 
                 }
@@ -54,16 +54,16 @@ class ChangePhoneActivity : AppCompatActivity() {
             viewModel.changePhoneLiveData.observe(this){
                     result ->
                 when(result){
-                    is Result.Success -> {
+                    is State.Success -> {
                         binding.progressBar.visibility = View.GONE
                         Toast.makeText(this, "Berhasil mengubah nomor telepon", Toast.LENGTH_SHORT).show()
                         finish()
                     }
-                    is Result.Error -> {
+                    is State.Error -> {
                         binding.progressBar.visibility = View.GONE
 
                     }
-                    is Result.Loading -> {
+                    is State.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
 
                     }

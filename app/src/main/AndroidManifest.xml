@@ -11,6 +11,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SolnetCS">
+
+        <activity android:name=".ui.cust.inactive_ticket.InactiveTicketActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.cust.history.HistoryActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.cust.setting.ChangePhoneActivity"
             android:exported="false" />

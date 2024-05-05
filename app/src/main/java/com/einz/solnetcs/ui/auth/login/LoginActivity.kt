@@ -12,10 +12,9 @@ import androidx.lifecycle.Observer
 import com.einz.solnetcs.data.di.ViewModelFactory
 import com.einz.solnetcs.databinding.ActivityLoginBinding
 import com.einz.solnetcs.ui.auth.register.RegisterActivity
-import com.einz.solnetcs.data.Result
+import com.einz.solnetcs.data.State
 import com.einz.solnetcs.ui.cust.customer.CustomerActivity
 import com.einz.solnetcs.util.ErrorDialog
-import com.einz.solnetcs.util.observeOnce
 
 class LoginActivity : AppCompatActivity() {
 
@@ -41,13 +40,13 @@ class LoginActivity : AppCompatActivity() {
             viewModel.responseLogin.observe(this){
                     result ->
                 when(result){
-                    is Result.Success -> {
+                    is State.Success -> {
                         viewModel.checkCustomer()
                     }
-                    is Result.Error -> {
+                    is State.Error -> {
                         showError(result.errorMessage)
                     }
-                    is Result.Loading -> {
+                    is State.Loading -> {
                         showLoading(true)
                     }
 
@@ -58,17 +57,17 @@ class LoginActivity : AppCompatActivity() {
 
             viewModel.checkCustomerLiveData.observe(this, Observer{
                 when(it){
-                    is Result.Success -> {
+                    is State.Success -> {
                         showLoading(false)
                         val intent = Intent(this, CustomerActivity::class.java)
                         startActivity(intent)
                         finish()
                     }
-                    is Result.Error -> {
+                    is State.Error -> {
                         showLoading(false)
                         Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show()
                     }
-                    is Result.Loading -> {
+                    is State.Loading -> {
                         showLoading(true)
                     }
                 }

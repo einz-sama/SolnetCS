@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
+import com.einz.solnetcs.data.model.FirebaseTimestamp
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -65,21 +66,11 @@ fun uriToFile(selectedImg: Uri, context: Context): File {
     return myFile
 }
 
-fun reduceFileImage(file: File): File {
-    val bitmap = BitmapFactory.decodeFile(file.path)
-
-    var compressQuality = 100
-    var streamLength: Int
-
-    do {
-        val bmpStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality, bmpStream)
-        val bmpPicByteArray = bmpStream.toByteArray()
-        streamLength = bmpPicByteArray.size
-        compressQuality -= 5
-    } while (streamLength > 1000000)
-
-    bitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality, FileOutputStream(file))
-
-    return file
+fun formatFirebaseTimestamp(firebaseTimestamp: FirebaseTimestamp?): String {
+    firebaseTimestamp?.let {
+        val date = it.toTimestamp().toDate() // Convert to Date object
+        val format = SimpleDateFormat("MMMM dd HH:mm", Locale.getDefault())
+        return format.format(date)
+    }
+    return "Unknown Date" // Return a default or error string if timestamp is null
 }

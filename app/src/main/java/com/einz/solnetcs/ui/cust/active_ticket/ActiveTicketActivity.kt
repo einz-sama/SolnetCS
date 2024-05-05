@@ -11,14 +11,12 @@ import androidx.activity.viewModels
 import com.einz.solnetcs.R
 import com.einz.solnetcs.data.di.ViewModelFactory
 import com.einz.solnetcs.databinding.ActivityActiveTicketBinding
-import com.einz.solnetcs.data.Result
+import com.einz.solnetcs.data.State
 import com.einz.solnetcs.ui.auth.login.LoginActivity
 import com.einz.solnetcs.ui.cust.customer.CustomerActivity
-import com.einz.solnetcs.util.observeOnce
 import java.text.SimpleDateFormat
 import java.util.Locale
 import android.provider.ContactsContract
-import android.provider.ContactsContract.CommonDataKinds.Phone
 import com.einz.solnetcs.util.phoneValidator
 
 class ActiveTicketActivity : AppCompatActivity() {
@@ -44,13 +42,13 @@ class ActiveTicketActivity : AppCompatActivity() {
         viewModel.customerLiveData.observe(this){
             custData ->
             when(custData){
-                is Result.Success -> {
+                is State.Success -> {
                     idCustomer = custData.data?.idCustomer.toString()
                     viewModel.getLaporan(idCustomer)
                     viewModel.getLaporanLiveData.observe(this){
                             laporan ->
                         when(laporan){
-                            is Result.Success -> {
+                            is State.Success -> {
                                 idLaporan = laporan.data?.idLaporan.toString()
                                 val desiredTime = laporan.data?.desiredTime?.toTimestamp()?.toDate()
                                 val formattedDesiredTime = if (desiredTime != null) {
@@ -206,13 +204,13 @@ class ActiveTicketActivity : AppCompatActivity() {
                                 }
 
                             }
-                            is Result.Error -> {
+                            is State.Error -> {
 //                    val intent = Intent(this, CustomerActivity::class.java)
 //                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
 //                    startActivity(intent)
 //                    finish()
                             }
-                            is Result.Loading -> {
+                            is State.Loading -> {
 
                             }
                         }
@@ -220,13 +218,13 @@ class ActiveTicketActivity : AppCompatActivity() {
 
 
                 }
-                is Result.Error -> {
+                is State.Error -> {
                     val intent = Intent(this, LoginActivity::class.java)
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
                     finish()
                 }
-                is Result.Loading -> {
+                is State.Loading -> {
 
                 }
             }
@@ -253,7 +251,7 @@ class ActiveTicketActivity : AppCompatActivity() {
         viewModel.laporanDoneLiveData.observe(this){
                 result ->
             when(result){
-                is Result.Success -> {
+                is State.Success -> {
                     viewModel.resetLaporanDone()
                     //dialog to show laporan is completed, show OK button
                     val dialog = androidx.appcompat.app.AlertDialog.Builder(this)
@@ -274,10 +272,10 @@ class ActiveTicketActivity : AppCompatActivity() {
                     dialog.show()
 
                 }
-                is Result.Error -> {
+                is State.Error -> {
                     Toast.makeText(this, "Terjadi kesalahan", Toast.LENGTH_SHORT).show()
                 }
-                is Result.Loading -> {
+                is State.Loading -> {
 
                 }
 

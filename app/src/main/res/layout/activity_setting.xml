@@ -138,9 +138,11 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="20dp"
         android:text="Ubah Password"
-        android:textColor="@color/black"
+        android:textColor="@color/solnet_orange_700"
         android:textSize="20sp"
         android:fontFamily="@font/ubuntu_medium"
+        app:drawableStartCompat="@drawable/ic_lock"
+        app:drawableTint="@color/solnet_blue_800"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/view1" />
 
@@ -162,9 +164,11 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="20dp"
         android:text="Ubah Alamat"
-        android:textColor="@color/black"
+        android:textColor="@color/solnet_orange_700"
         android:textSize="20sp"
         android:fontFamily="@font/ubuntu_medium"
+        app:drawableStartCompat="@drawable/ic_map"
+        app:drawableTint="@color/solnet_blue_800"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/change_password" />
 
@@ -186,9 +190,11 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="20dp"
         android:text="Ubah Nomor Telepon"
-        android:textColor="@color/black"
+        android:textColor="@color/solnet_orange_700"
         android:textSize="20sp"
         android:fontFamily="@font/ubuntu_medium"
+        app:drawableStartCompat="@drawable/ic_phone"
+        app:drawableTint="@color/solnet_blue_800"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/change_address" />
 
@@ -209,12 +215,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="20dp"
-        android:text="Logout"
+        android:text="Keluar dari Akun"
         android:textColor="@color/danger"
         android:textSize="20sp"
-        android:fontFamily="@font/ubuntu_medium"
+        android:fontFamily="@font/ubuntu_bold"
+        app:drawableTint="@color/danger"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/change_phone" />
+        app:layout_constraintTop_toBottomOf="@+id/change_phone"
+        app:drawableStartCompat="@drawable/logout" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

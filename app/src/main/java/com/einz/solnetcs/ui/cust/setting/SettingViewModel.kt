@@ -8,16 +8,16 @@ import kotlinx.coroutines.launch
 class SettingViewModel(private val repository: Repository): ViewModel() {
 
     private val _customerLiveData = repository.customerLiveData
-    val customerLiveData = repository.customerLiveData
+    val customerLiveData = _customerLiveData
 
     private val _changePasswordLiveData = repository.changePasswordLiveData
-    val changePasswordLiveData = repository.changePasswordLiveData
+    val changePasswordLiveData = _changePasswordLiveData
 
     private val _changeAlamatLiveData = repository.changeAlamatLiveData
-    val changeAlamatLiveData = repository.changeAlamatLiveData
+    val changeAlamatLiveData = _changeAlamatLiveData
 
     private val _changePhoneLiveData = repository.changePhoneLiveData
-    val changePhoneLiveData = repository.changePhoneLiveData
+    val changePhoneLiveData = _changePhoneLiveData
 
     private val _loggedOutLiveData = repository.loggedOutLiveData
     val loggedOutLiveData = _loggedOutLiveData

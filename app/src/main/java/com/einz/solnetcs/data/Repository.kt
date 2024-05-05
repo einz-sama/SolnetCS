@@ -16,31 +16,33 @@ class Repository(private val context: Context) {
     private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private var db: FirebaseDatabase = FirebaseDatabase.getInstance()
 
-    val userLiveData: MutableLiveData<Result<FirebaseUser?>> = MutableLiveData()
-    val customerLiveData: MutableLiveData<Result<Customer?>> = MutableLiveData()
-    val checkCustomerLiveData: MutableLiveData<Result<Customer?>> = MutableLiveData()
+    val userLiveData: MutableLiveData<State<FirebaseUser?>> = MutableLiveData()
+    val customerLiveData: MutableLiveData<State<Customer?>> = MutableLiveData()
+    val checkCustomerLiveData: MutableLiveData<State<Customer?>> = MutableLiveData()
 
-    val registerSuccessLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
-    val loginSuccessLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
-    val loggedOutLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
+    val registerSuccessLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
+    val loginSuccessLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
+    val loggedOutLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
 
-    val changePasswordLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
-    val changeAlamatLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
-    val changePhoneLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
+    val changePasswordLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
+    val changeAlamatLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
+    val changePhoneLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
 
-    val createLaporanLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
-    val getLaporanLiveData: MutableLiveData<Result<Laporan?>> = MutableLiveData()
-    val checkLaporanLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
-    val laporanDoneLiveData: MutableLiveData<Result<Boolean?>> = MutableLiveData()
+    val createLaporanLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
+    val getLaporanLiveData: MutableLiveData<State<Laporan?>> = MutableLiveData()
+    val checkLaporanLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
+    val laporanDoneLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
+    val laporanListLiveData: MutableLiveData<State<List<Laporan?>>> = MutableLiveData()
+    val laporanLiveData: MutableLiveData<State<Laporan?>> = MutableLiveData()
 
     init {
         if (firebaseAuth.currentUser != null) {
-            userLiveData.postValue(Result.Success(firebaseAuth.currentUser))
+            userLiveData.postValue(State.Success(firebaseAuth.currentUser))
         }
     }
 
     suspend fun register(customer: Customer, password: String) {
-        userLiveData.postValue(Result.Loading)
+        userLiveData.postValue(State.Loading)
 
         try {
             firebaseAuth.createUserWithEmailAndPassword(customer.email, password)
@@ -52,49 +54,49 @@ class Repository(private val context: Context) {
                         userId?.let { uid ->
                             databaseReference.child(uid).setValue(customer)
                                 .addOnSuccessListener {
-                                    registerSuccessLiveData.postValue(Result.Success(true))
+                                    registerSuccessLiveData.postValue(State.Success(true))
                                 }
                                 .addOnFailureListener { exception ->
-                                    registerSuccessLiveData.postValue(Result.Error(exception.message ?: "Registration failed"))
+                                    registerSuccessLiveData.postValue(State.Error(exception.message ?: "Registration failed"))
                                 }
                         } ?: run {
-                            registerSuccessLiveData.postValue(Result.Error("Error"))
+                            registerSuccessLiveData.postValue(State.Error("Error"))
                         }
                     } else {
-                        registerSuccessLiveData.postValue(Result.Error(task.exception?.message ?: "Registration failed"))
+                        registerSuccessLiveData.postValue(State.Error(task.exception?.message ?: "Registration failed"))
                     }
                 }
         } catch (e: Exception) {
-            userLiveData.postValue(Result.Error(e.message ?: "Unknown error"))
+            userLiveData.postValue(State.Error(e.message ?: "Unknown error"))
         }
     }
 
     suspend fun login(email: String, password: String) {
-        userLiveData.postValue(Result.Loading)
+        userLiveData.postValue(State.Loading)
 
         try {
             firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        userLiveData.postValue(Result.Success(firebaseAuth.currentUser))
-                        loggedOutLiveData.postValue(Result.Error("Logged in"))
+                        userLiveData.postValue(State.Success(firebaseAuth.currentUser))
+                        loggedOutLiveData.postValue(State.Error("Logged in"))
                     } else {
-                        userLiveData.postValue(Result.Error(task.exception?.message ?: "Login failed"))
+                        userLiveData.postValue(State.Error(task.exception?.message ?: "Login failed"))
                     }
                 }
         } catch (e: Exception) {
-            userLiveData.postValue(Result.Error(e.message ?: "Unknown error"))
+            userLiveData.postValue(State.Error(e.message ?: "Unknown error"))
         }
     }
 
     suspend fun logout() {
-        loggedOutLiveData.postValue(Result.Success(true))
+        loggedOutLiveData.postValue(State.Success(true))
         firebaseAuth.signOut()
 
 
     }
     suspend fun getCustomerData() {
-        customerLiveData.postValue(Result.Loading)
+        customerLiveData.postValue(State.Loading)
         try {
             val userEmail = firebaseAuth.currentUser?.email ?: return
             val databaseReference = FirebaseDatabase.getInstance().getReference("customers")
@@ -105,26 +107,26 @@ class Repository(private val context: Context) {
                             for (userSnapshot in snapshot.children) {
                                 val customer = userSnapshot.getValue(Customer::class.java)
                                 customer?.let {
-                                    customerLiveData.postValue(Result.Success(it))
-                                    loggedOutLiveData.postValue(Result.Error("Logged in"))
+                                    customerLiveData.postValue(State.Success(it))
+                                    loggedOutLiveData.postValue(State.Error("Logged in"))
                                 }
                             }
                         } else {
-                            customerLiveData.postValue(Result.Error("Customer not found"))
+                            customerLiveData.postValue(State.Error("Customer not found"))
                         }
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        customerLiveData.postValue(Result.Error(error.message))
+                        customerLiveData.postValue(State.Error(error.message))
                     }
                 })
         } catch (e: Exception) {
-            customerLiveData.postValue(Result.Error(e.message ?: "Unknown error"))
+            customerLiveData.postValue(State.Error(e.message ?: "Unknown error"))
         }
     }
 
     suspend fun checkCustomerData() {
-        checkCustomerLiveData.postValue(Result.Loading)
+        checkCustomerLiveData.postValue(State.Loading)
         try {
             val userEmail = firebaseAuth.currentUser?.email ?: return
             val databaseReference = FirebaseDatabase.getInstance().getReference("customers")
@@ -135,42 +137,42 @@ class Repository(private val context: Context) {
                             for (userSnapshot in snapshot.children) {
                                 val customer = userSnapshot.getValue(Customer::class.java)
                                 customer?.let {
-                                    checkCustomerLiveData.postValue(Result.Success(it))
-                                    loggedOutLiveData.postValue(Result.Error("Logged in"))
+                                    checkCustomerLiveData.postValue(State.Success(it))
+                                    loggedOutLiveData.postValue(State.Error("Logged in"))
                                 }
                             }
                         } else {
-                            checkCustomerLiveData.postValue(Result.Error("Customer not found"))
+                            checkCustomerLiveData.postValue(State.Error("Customer not found"))
                         }
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        checkCustomerLiveData.postValue(Result.Error(error.message))
+                        checkCustomerLiveData.postValue(State.Error(error.message))
                     }
                 })
         } catch (e: Exception) {
-            checkCustomerLiveData.postValue(Result.Error(e.message ?: "Unknown error"))
+            checkCustomerLiveData.postValue(State.Error(e.message ?: "Unknown error"))
         }
     }
 
     suspend fun createLaporan(idCustomer: String, laporan: Laporan) {
-        createLaporanLiveData.postValue(Result.Loading)
+        createLaporanLiveData.postValue(State.Loading)
         try {
             val databaseReference = FirebaseDatabase.getInstance().getReference("reports")
             databaseReference.child(idCustomer).push().setValue(laporan)
                 .addOnSuccessListener {
-                    createLaporanLiveData.postValue(Result.Success(true))
+                    createLaporanLiveData.postValue(State.Success(true))
                 }
                 .addOnFailureListener { exception ->
-                    createLaporanLiveData.postValue(Result.Error(exception.message ?: "Create laporan failed"))
+                    createLaporanLiveData.postValue(State.Error(exception.message ?: "Create laporan failed"))
                 }
         } catch (e: Exception) {
-            createLaporanLiveData.postValue(Result.Error(e.message ?: "Unknown error"))
+            createLaporanLiveData.postValue(State.Error(e.message ?: "Unknown error"))
         }
     }
 
     suspend fun getActiveLaporanByIdCust(idCustomer: String) {
-        getLaporanLiveData.postValue(Result.Loading)
+        getLaporanLiveData.postValue(State.Loading)
 
         try {
             val databaseReference = FirebaseDatabase.getInstance().getReference("reports")
@@ -188,24 +190,24 @@ class Repository(private val context: Context) {
                             .mapNotNull { it.getValue(Laporan::class.java) }
                             .firstOrNull { it.status != 4 }
 
-                        getLaporanLiveData.postValue(Result.Success(laporan))
+                        getLaporanLiveData.postValue(State.Success(laporan))
                     } else {
-                        getLaporanLiveData.postValue(Result.Error("No Active Laporan found"))
+                        getLaporanLiveData.postValue(State.Error("No Active Laporan found"))
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    getLaporanLiveData.postValue(Result.Error(error.message))
+                    getLaporanLiveData.postValue(State.Error(error.message))
                 }
             })
         } catch (e: Exception) {
-            getLaporanLiveData.postValue(Result.Error(e.message ?: "Unknown error"))
+            getLaporanLiveData.postValue(State.Error(e.message ?: "Unknown error"))
         }
     }
 
 
     suspend fun updateLaporanStatus(idCustomer: String, idLaporan: String, newStatus: Int) {
-        laporanDoneLiveData.postValue(Result.Loading)
+        laporanDoneLiveData.postValue(State.Loading)
         val reportRef = FirebaseDatabase.getInstance().getReference("reports/$idCustomer/$idLaporan")
 
         // Update the Laporan status
@@ -225,30 +227,30 @@ class Repository(private val context: Context) {
                                     for (teknisiChild in teknisiSnapshot.children) {
                                         teknisiChild.ref.child("activeIdLaporan").setValue(null)
                                             .addOnSuccessListener {
-                                                laporanDoneLiveData.postValue(Result.Success(true))
+                                                laporanDoneLiveData.postValue(State.Success(true))
                                             }
                                             .addOnFailureListener { e ->
-                                                laporanDoneLiveData.postValue(Result.Error("Failed to clear Teknisi active Laporan ID: ${e.message}"))
+                                                laporanDoneLiveData.postValue(State.Error("Failed to clear Teknisi active Laporan ID: ${e.message}"))
                                             }
                                     }
                                 }
 
                                 override fun onCancelled(teknisiDbError: DatabaseError) {
-                                    laporanDoneLiveData.postValue(Result.Error("Database error on Teknisi lookup: ${teknisiDbError.message}"))
+                                    laporanDoneLiveData.postValue(State.Error("Database error on Teknisi lookup: ${teknisiDbError.message}"))
                                 }
                             })
                         } else {
-                            laporanDoneLiveData.postValue(Result.Error("No Teknisi ID found in Laporan"))
+                            laporanDoneLiveData.postValue(State.Error("No Teknisi ID found in Laporan"))
                         }
                     }
 
                     override fun onCancelled(dbError: DatabaseError) {
-                        laporanDoneLiveData.postValue(Result.Error("Database error on Laporan lookup: ${dbError.message}"))
+                        laporanDoneLiveData.postValue(State.Error("Database error on Laporan lookup: ${dbError.message}"))
                     }
                 })
             }
             .addOnFailureListener { e ->
-                laporanDoneLiveData.postValue(Result.Error("Failed to update Laporan status: ${e.message}"))
+                laporanDoneLiveData.postValue(State.Error("Failed to update Laporan status: ${e.message}"))
             }
     }
 
@@ -271,70 +273,183 @@ class Repository(private val context: Context) {
                             .mapNotNull { it.getValue(Laporan::class.java) }
                             .firstOrNull { it.status != 4 }
 
-                        checkLaporanLiveData.postValue(Result.Success(true))
+                        checkLaporanLiveData.postValue(State.Success(true))
                     } else {
-                        checkLaporanLiveData.postValue(Result.Success(false))
+                        checkLaporanLiveData.postValue(State.Success(false))
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    checkLaporanLiveData.postValue(Result.Error(error.message))
+                    checkLaporanLiveData.postValue(State.Error(error.message))
                 }
             })
         } catch (e: Exception) {
-            checkLaporanLiveData.postValue(Result.Error(e.message ?: "Unknown error"))
+            checkLaporanLiveData.postValue(State.Error(e.message ?: "Unknown error"))
         }
+    }
+
+    fun getFinishedLaporan(idCust: String) {
+        val reportsReference = db.getReference("reports")
+        laporanListLiveData.postValue(State.Loading)
+
+        // Real-time listener
+        reportsReference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val allReports = mutableListOf<Laporan>()
+
+                // Iterate through each customer's reports
+                dataSnapshot.children.forEach { customerReportsSnapshot ->
+                    // Iterate through each report under a customer ID
+                    customerReportsSnapshot.children.forEach { reportSnapshot ->
+                        val report = reportSnapshot.getValue(Laporan::class.java)
+                        // Check if the report's status is '0'
+                        if (report?.status == 4) {
+                            if (report?.idCustomer == idCust) {
+                                report?.let { allReports.add(it) }
+                            }
+                        }
+                    }
+                }
+
+                laporanListLiveData.postValue(State.Success(allReports))
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                laporanListLiveData.postValue(State.Error(databaseError.message))
+            }
+        })
+    }
+
+    fun resetLaporan(){
+        laporanLiveData.postValue(State.Loading)
+    }
+    fun getLaporanById(idLaporan: String) {
+        resetLaporan()
+        laporanLiveData.postValue(State.Loading)
+
+        val reportsReference = db.getReference("reports")
+
+        reportsReference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                var laporanFound = false
+
+                // Iterate through each customer's reports
+                for (customerSnapshot in dataSnapshot.children) {
+                    // Iterate through each report under a customer ID
+                    for (reportSnapshot in customerSnapshot.children) {
+                        val report = reportSnapshot.getValue(Laporan::class.java)
+                        if (report?.idLaporan == idLaporan) {
+                            laporanLiveData.postValue(State.Success(report))
+                            laporanFound = true
+                            break
+                        }
+                    }
+                    if (laporanFound) break
+                }
+
+                if (!laporanFound) {
+                    laporanLiveData.postValue(State.Error("Laporan not found"))
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                laporanLiveData.postValue(State.Error(databaseError.message))
+            }
+        })
     }
 
     fun changePassword(newPassword: String) {
         val user: FirebaseUser? = firebaseAuth.currentUser
-        changePasswordLiveData.postValue(Result.Loading)
+        changePasswordLiveData.postValue(State.Loading)
 
         user?.let {
             it.updatePassword(newPassword)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         // Password change successful
-                        changePasswordLiveData.postValue(Result.Success(true))
+                        changePasswordLiveData.postValue(State.Success(true))
                     } else {
                         // Password change failed
-                        changePasswordLiveData.postValue(Result.Error(task.exception?.message ?: "Failed to update password."))
+                        changePasswordLiveData.postValue(State.Error(task.exception?.message ?: "Failed to update password."))
                     }
                 }
         } ?: run {
             // User is not signed in or user data is not available
-            changePasswordLiveData.postValue(Result.Error("No signed-in user."))
+            changePasswordLiveData.postValue(State.Error("No signed-in user."))
         }
     }
 
     fun changeAlamat(idCustomer: String, newAlamat: String) {
         val databaseReference = FirebaseDatabase.getInstance().getReference("customers")
-        changeAlamatLiveData.postValue(Result.Loading)
+        changeAlamatLiveData.postValue(State.Loading)
 
-        databaseReference.child(idCustomer).updateChildren(mapOf("alamatCustomer" to newAlamat))
-            .addOnSuccessListener {
-                // Update successful
-                changeAlamatLiveData.postValue(Result.Success(true))
-            }
-            .addOnFailureListener { exception ->
-                // Update failed
-                changeAlamatLiveData.postValue(Result.Error(exception.message ?: "Update alamat failed"))
-            }
+        val idCust = idCustomer.toDouble()
+
+        // Query the database for nodes with the matching idCustomer
+        databaseReference.orderByChild("idCustomer").equalTo(idCust)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        // Iterate over the matching nodes (should be only one) and update alamatCustomer
+                        for (customerSnapshot in snapshot.children) {
+                            customerSnapshot.ref.updateChildren(mapOf("alamatCustomer" to newAlamat))
+                                .addOnSuccessListener {
+                                    // Update successful
+                                    changeAlamatLiveData.postValue(State.Success(true))
+                                }
+                                .addOnFailureListener { exception ->
+                                    // Update failed
+                                    changeAlamatLiveData.postValue(State.Error(exception.message ?: "Update address failed"))
+                                }
+                        }
+                    } else {
+                        // No customer with the provided idCustomer found
+                        changeAlamatLiveData.postValue(State.Error("Customer not found"))
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Query cancelled
+                    changeAlamatLiveData.postValue(State.Error(error.message ?: "Query cancelled"))
+                }
+            })
+
     }
 
     fun changePhone(idCustomer: String, newPhoneNumber: String) {
         val databaseReference = FirebaseDatabase.getInstance().getReference("customers")
-        changePhoneLiveData.postValue(Result.Loading)
+        changePhoneLiveData.postValue(State.Loading)
 
-        databaseReference.child(idCustomer).updateChildren(mapOf("noTelpCustomer" to newPhoneNumber))
-            .addOnSuccessListener {
-                // Update successful
-                changePhoneLiveData.postValue(Result.Success(true))
-            }
-            .addOnFailureListener { exception ->
-                // Update failed
-                changePhoneLiveData.postValue(Result.Error(exception.message ?: "Update phone number failed"))
-            }
+        val idCust = idCustomer.toDouble()
+
+        // Query the database for nodes with the matching idCustomer
+        databaseReference.orderByChild("idCustomer").equalTo(idCust)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        // Iterate over the matching nodes (should be only one) and update noTelpCustomer
+                        for (customerSnapshot in snapshot.children) {
+                            customerSnapshot.ref.updateChildren(mapOf("noTelpCustomer" to newPhoneNumber))
+                                .addOnSuccessListener {
+                                    // Update successful
+                                    changePhoneLiveData.postValue(State.Success(true))
+                                }
+                                .addOnFailureListener { exception ->
+                                    // Update failed
+                                    changePhoneLiveData.postValue(State.Error(exception.message ?: "Update phone number failed"))
+                                }
+                        }
+                    } else {
+                        // No customer with the provided idCustomer found
+                        changePhoneLiveData.postValue(State.Error("Customer not found"))
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Query cancelled
+                    changePhoneLiveData.postValue(State.Error(error.message ?: "Query cancelled"))
+                }
+            })
     }
 
     fun finishLaporan(idLaporan: String, newStatus: Int = 3) {
@@ -364,14 +479,14 @@ class Repository(private val context: Context) {
                                                 // Set activeIdLaporan to null or remove the property
                                                 childSnapshot.ref.child("activeIdLaporan").removeValue() // or setValue(null)
                                             }
-                                            laporanDoneLiveData.postValue(Result.Success(true))
+                                            laporanDoneLiveData.postValue(State.Success(true))
                                         } else {
-                                            laporanDoneLiveData.postValue(Result.Error("Teknisi not found"))
+                                            laporanDoneLiveData.postValue(State.Error("Teknisi not found"))
                                         }
                                     }
 
                                     override fun onCancelled(databaseError: DatabaseError) {
-                                        laporanDoneLiveData.postValue(Result.Error(databaseError.message))
+                                        laporanDoneLiveData.postValue(State.Error(databaseError.message))
                                     }
                                 })
                             }
@@ -382,18 +497,18 @@ class Repository(private val context: Context) {
                 }
 
                 if (!laporanFound) {
-                    laporanDoneLiveData.postValue(Result.Error("Laporan not found"))
+                    laporanDoneLiveData.postValue(State.Error("Laporan not found"))
                 }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                laporanDoneLiveData.postValue(Result.Error(databaseError.message))
+                laporanDoneLiveData.postValue(State.Error(databaseError.message))
             }
         })
     }
 
     fun resetLaporanDone(){
-        laporanDoneLiveData.postValue(Result.Loading)
+        laporanDoneLiveData.postValue(State.Loading)
     }
 
 

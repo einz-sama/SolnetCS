@@ -3,7 +3,6 @@ package com.einz.solnetcs.ui.cust.active_ticket
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.einz.solnetcs.data.Repository
-import com.einz.solnetcs.data.Result
 import kotlinx.coroutines.launch
 
 class ActiveTicketViewModel(private val repository: Repository): ViewModel() {

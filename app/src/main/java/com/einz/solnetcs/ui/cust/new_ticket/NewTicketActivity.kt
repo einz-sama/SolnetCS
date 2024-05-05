@@ -13,7 +13,7 @@ import androidx.activity.viewModels
 import com.einz.solnetcs.data.di.ViewModelFactory
 import com.einz.solnetcs.databinding.ActivityNewTicketBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.einz.solnetcs.data.Result
+import com.einz.solnetcs.data.State
 import com.einz.solnetcs.data.model.FirebaseTimestamp
 import com.einz.solnetcs.data.model.Laporan
 import com.einz.solnetcs.data.model.gangguan
@@ -53,20 +53,20 @@ class NewTicketActivity : AppCompatActivity() {
         viewModel.customerLiveData.observe(this){
             result ->
             when(result){
-                is Result.Success -> {
+                is State.Success -> {
                     idCustomer = result.data?.idCustomer.toString()
                     daerahCustomer = result.data?.daerahCustomer.toString()
                     alamatCustomer = result.data?.alamatCustomer.toString()
                     telponCustomer = result.data?.noTelpCustomer.toString()
 
                 }
-                is Result.Error -> {
+                is State.Error -> {
                     val intent = Intent(this, LoginActivity::class.java)
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     startActivity(intent)
                     finish()
                 }
-                is Result.Loading -> {
+                is State.Loading -> {
 
                 }
             }
@@ -119,16 +119,16 @@ class NewTicketActivity : AppCompatActivity() {
                 viewModel.createLaporanLiveData.observe(this){
                         result ->
                     when(result){
-                        is Result.Success -> {
+                        is State.Success -> {
                             Toast.makeText(this, "Laporan berhasil dikirim", Toast.LENGTH_SHORT).show()
                             val intent = Intent(this, ActiveTicketActivity::class.java)
                             startActivity(intent)
                             finish()
                         }
-                        is Result.Error -> {
+                        is State.Error -> {
                             Toast.makeText(this, "Laporan gagal dikirim", Toast.LENGTH_SHORT).show()
                         }
-                        is Result.Loading -> {
+                        is State.Loading -> {
                             Toast.makeText(this, "Loading...", Toast.LENGTH_SHORT).show()
                         }
                     }

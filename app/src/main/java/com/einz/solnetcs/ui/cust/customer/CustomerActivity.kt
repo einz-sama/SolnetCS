@@ -9,19 +9,15 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.OnLifecycleEvent
 import com.einz.solnetcs.data.di.ViewModelFactory
 import com.einz.solnetcs.databinding.ActivityCustomerBinding
-import com.einz.solnetcs.data.Result
+import com.einz.solnetcs.data.State
 import com.einz.solnetcs.data.model.Customer
 import com.einz.solnetcs.ui.auth.login.LoginActivity
 import com.einz.solnetcs.ui.cust.active_ticket.ActiveTicketActivity
 import com.einz.solnetcs.ui.cust.info.FaqActivity
 import com.einz.solnetcs.ui.cust.helpdesk.HelpdeskActivity
+import com.einz.solnetcs.ui.cust.history.HistoryActivity
 import com.einz.solnetcs.ui.cust.new_ticket.NewTicketActivity
 import com.einz.solnetcs.ui.cust.setting.SettingActivity
 import com.einz.solnetcs.util.observeOnce
@@ -51,7 +47,7 @@ class CustomerActivity : AppCompatActivity() {
 
         viewModel.customerLiveData.observe(this@CustomerActivity) { result ->
             when(result){
-                is Result.Success -> {
+                is State.Success -> {
                     cachedCustomerData = result.data
                     binding.apply{
                         var header = "SI-TP"
@@ -64,18 +60,18 @@ class CustomerActivity : AppCompatActivity() {
                         welcome.text = "Selamat Datang"
                         username.text = result.data?.namaCustomer
                         idPelanggan.text = "ID PELANGGAN: ${header}${result.data?.idCustomer}"
-                        alamat.text = "ALAMAT: ${result.data?.alamatCustomer}"
-                        daerah.text = "DAERAH: ${result.data?.daerahCustomer}"
-                        telepon.text = "TELEPON: ${result.data?.noTelpCustomer}"
+                        alamat.text = "${result.data?.alamatCustomer}"
+                        daerah.text = "${result.data?.daerahCustomer}"
+                        telepon.text = "${result.data?.noTelpCustomer}"
                         showLoading(false)
                         setupViews()
                     }
                 }
-                is Result.Error -> {
+                is State.Error -> {
                     Log.d("CustomerActivity", "Error: ${result.errorMessage}")
                     showLoading(false)
                 }
-                is Result.Loading -> {
+                is State.Loading -> {
                     showLoading(true)
                     Log.d("CustomerActivity", "Loading...")
                 }
@@ -88,7 +84,7 @@ class CustomerActivity : AppCompatActivity() {
         viewModel.loggedOutLiveData.observe(this){
                 result ->
             when(result){
-                is Result.Success -> {
+                is State.Success -> {
                     if(result.data == true){
                         val intent = Intent(this, LoginActivity::class.java)
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -97,10 +93,10 @@ class CustomerActivity : AppCompatActivity() {
                     }
 
                 }
-                is Result.Error -> {
+                is State.Error -> {
 
                 }
-                is Result.Loading -> {
+                is State.Loading -> {
                     Log.d("SettingActivity", "Loading")
                 }
             }
@@ -129,7 +125,7 @@ class CustomerActivity : AppCompatActivity() {
                 viewModel.checkLaporan(idCustomer)
                 viewModel.checkLaporanLiveData.observeOnce(this@CustomerActivity) { result ->
                     when(result){
-                        is Result.Success -> {
+                        is State.Success -> {
                             showLoading(false)
                             if(result.data == true){
                                 val intent = Intent(this@CustomerActivity, ActiveTicketActivity::class.java)
@@ -140,11 +136,11 @@ class CustomerActivity : AppCompatActivity() {
                             }
 
                         }
-                        is Result.Error -> {
+                        is State.Error -> {
                             showLoading(false)
                             Log.d("CustomerActivity", "Error: ${result.errorMessage}")
                         }
-                        is Result.Loading -> {
+                        is State.Loading -> {
                             showLoading(true)
                         }
 
@@ -187,6 +183,12 @@ class CustomerActivity : AppCompatActivity() {
             info.setOnClickListener(){
                 val intent = Intent(this@CustomerActivity, FaqActivity::class.java)
                 startActivity(intent)
+            }
+            riwayat.setOnClickListener(){
+                val intent = Intent(this@CustomerActivity, HistoryActivity::class.java)
+                intent.putExtra(HistoryActivity.EXTRA_CUSTOMER, idCustomer)
+                startActivity(intent)
+
             }
 
 

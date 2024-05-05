@@ -6,10 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
-import com.einz.solnetcs.R
-import com.einz.solnetcs.data.Result
+import com.einz.solnetcs.data.State
 import com.einz.solnetcs.data.di.ViewModelFactory
 import com.einz.solnetcs.data.model.Customer
 import com.einz.solnetcs.data.model.whatsapp
@@ -39,16 +37,16 @@ class HelpdeskActivity : AppCompatActivity() {
             viewModel.customerLiveData.observe(this){
                     result ->
                 when(result){
-                    is Result.Success -> {
+                    is State.Success -> {
                         cachedCustomerData = result.data
                         idCustomer = result.data?.idCustomer.toString()
                         binding.progressBar.visibility = View.GONE
                     }
-                    is Result.Error -> {
+                    is State.Error -> {
                         Log.d("CustomerActivity", "Error: ${result.errorMessage}")
                         binding.progressBar.visibility = View.GONE
                     }
-                    is Result.Loading -> {
+                    is State.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
                         Log.d("CustomerActivity", "Loading...")
                     }
@@ -67,7 +65,7 @@ class HelpdeskActivity : AppCompatActivity() {
                 viewModel.checkLaporanLiveData.observe(this@HelpdeskActivity){
                         result ->
                     when(result){
-                        is Result.Success -> {
+                        is State.Success -> {
                             binding.progressBar.visibility = View.GONE
                             if(result.data == true){
                                 val intent = Intent(this@HelpdeskActivity, ActiveTicketActivity::class.java)
@@ -78,11 +76,11 @@ class HelpdeskActivity : AppCompatActivity() {
                             }
 
                         }
-                        is Result.Error -> {
+                        is State.Error -> {
                             binding.progressBar.visibility = View.GONE
                             Log.d("CustomerActivity", "Error: ${result.errorMessage}")
                         }
-                        is Result.Loading -> {
+                        is State.Loading -> {
                             binding.progressBar.visibility = View.VISIBLE
                         }
 

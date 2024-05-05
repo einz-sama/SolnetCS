@@ -5,11 +5,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import com.einz.solnetcs.R
-import com.einz.solnetcs.data.Result
+import com.einz.solnetcs.data.State
 import com.einz.solnetcs.data.di.ViewModelFactory
 import com.einz.solnetcs.databinding.ActivitySettingBinding
 import com.einz.solnetcs.ui.auth.login.LoginActivity
@@ -36,7 +34,7 @@ class SettingActivity : AppCompatActivity() {
         viewModel.customerLiveData.observe(this){
             result ->
             when(result){
-                is Result.Success -> {
+                is State.Success -> {
 
                     binding.apply{
                         var header = "SI-TP"
@@ -48,15 +46,15 @@ class SettingActivity : AppCompatActivity() {
                         idCustomer = result.data?.idCustomer.toString()
                         welcome.text = "Selamat Datang"
                         username.text = result.data?.namaCustomer
-                        idPelanggan.text = "ID PELANGGAN: ${header}${result.data?.idCustomer}"
+                        idPelanggan.text = "${header}${result.data?.idCustomer}"
                     }
 
                 }
-                is Result.Error -> {
+                is State.Error -> {
 
 
                 }
-                is Result.Loading -> {
+                is State.Loading -> {
 
 
                 }
@@ -107,7 +105,7 @@ class SettingActivity : AppCompatActivity() {
         viewModel.loggedOutLiveData.observe(this){
             result ->
             when(result){
-                is Result.Success -> {
+                is State.Success -> {
                     if(result.data == true){
                         val intent = Intent(this, LoginActivity::class.java)
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -116,10 +114,10 @@ class SettingActivity : AppCompatActivity() {
                     }
 
                 }
-                is Result.Error -> {
+                is State.Error -> {
 
                 }
-                is Result.Loading -> {
+                is State.Loading -> {
                     Log.d("SettingActivity", "Loading")
                 }
             }

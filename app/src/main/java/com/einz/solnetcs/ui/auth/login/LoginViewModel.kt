@@ -6,13 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.einz.solnetcs.data.Repository
 import kotlinx.coroutines.launch
-import com.einz.solnetcs.data.Result
+import com.einz.solnetcs.data.State
 import com.google.firebase.auth.FirebaseUser
 
 class LoginViewModel(private val repository: Repository): ViewModel() {
 
     private val _responseLogin = repository.userLiveData
-    val responseLogin: MutableLiveData<Result<FirebaseUser?>> = _responseLogin
+    val responseLogin: MutableLiveData<State<FirebaseUser?>> = _responseLogin
 
     private val _customerLiveData = repository.customerLiveData
     val customerLiveData = repository.customerLiveData
