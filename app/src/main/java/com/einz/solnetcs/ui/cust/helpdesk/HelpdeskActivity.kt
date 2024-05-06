@@ -13,6 +13,7 @@ import com.einz.solnetcs.data.model.Customer
 import com.einz.solnetcs.data.model.whatsapp
 import com.einz.solnetcs.databinding.ActivityHelpdeskActivityBinding
 import com.einz.solnetcs.ui.cust.active_ticket.ActiveTicketActivity
+import com.einz.solnetcs.ui.cust.chatbot.ChatBotActivity
 import com.einz.solnetcs.ui.cust.customer.CustomerViewModel
 import com.einz.solnetcs.ui.cust.info.FaqActivity
 import com.einz.solnetcs.ui.cust.new_ticket.NewTicketActivity
@@ -92,6 +93,10 @@ class HelpdeskActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             btnBot.setOnClickListener {
+                val intent = Intent(this@HelpdeskActivity, ChatBotActivity::class.java)
+                startActivity(intent)
+            }
+            btnChat.setOnClickListener {
                 //implicit intent to open whatsapp on phone number +62812345678
                 val intent = Intent(Intent.ACTION_VIEW)
                 intent.setPackage("com.whatsapp")
