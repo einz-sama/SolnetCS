@@ -59,6 +59,7 @@ class ActiveTicketActivity : AppCompatActivity() {
 
                                 binding.fabChat.setOnClickListener {
                                     var teknisiPhone = laporan.data?.teknisiPhone
+                                    val teknisiName = laporan.data?.teknisi
                                     teknisiPhone = phoneValidator(this@ActiveTicketActivity,teknisiPhone!!)
 
 
@@ -71,11 +72,12 @@ class ActiveTicketActivity : AppCompatActivity() {
                                         val whatsappUrl = "https://wa.me/$teknisiPhone" // WhatsApp's URL scheme
                                         intent.data = Uri.parse(whatsappUrl)
                                         startActivity(intent)
+
                                     } catch (e: PackageManager.NameNotFoundException) {
                                         // WhatsApp not installed, open Contacts app to add a new contact
                                         val intent = Intent(Intent.ACTION_INSERT, ContactsContract.Contacts.CONTENT_URI).apply {
                                             putExtra(ContactsContract.Intents.Insert.PHONE, teknisiPhone)
-                                            putExtra(ContactsContract.Intents.Insert.NAME, "Pelanggan")
+                                            putExtra(ContactsContract.Intents.Insert.NAME, teknisiPhone)
                                         }
                                         startActivity(intent)
                                     }
