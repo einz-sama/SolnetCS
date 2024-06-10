@@ -8,6 +8,7 @@ package com.einz.solnetcs.ui.cust.chatbot
 //5 -> Change No HP
 
 
+// Questions and Responses
 val ubahAlamat_Response = ChatBotResponse(
     "Untuk mengubah Alamat anda, bisa langsung menekan tombol dibawah",
     null,
@@ -72,44 +73,128 @@ val newTicket_Question = ChatBotQuestion(
     )
 )
 
+val newModemSetting_Response = ChatBotResponse(
+    "Apakah ingin ubah Password WiFi atau Pengaturan Lain?",
+    null,
+    true,
+    1,
+    "Seting Modem"
+)
+
+val newModemDown_Response = ChatBotResponse(
+    "Apakah modem mati?",
+    null,
+    true,
+    1,
+    "Modem Down"
+)
+
+val newModemError_Response = ChatBotResponse(
+    "Apakah modem menunjukkan kesalahan?",
+    null,
+    true,
+    1,
+    "Modem Error"
+)
+
+val newModemLoss_Response = ChatBotResponse(
+    "Apakah sinyal lemah?",
+    null,
+    true,
+    1,
+    "Modem Loss"
+)
+
+val newAdapterPower_Response = ChatBotResponse(
+    "Apakah ada masalah dengan adapter power?",
+    null,
+    true,
+    1,
+    "Adapter Power"
+)
+
+val newIndikatorMerah_Response = ChatBotResponse(
+    "Apakah indikator modem warna merah?",
+    null,
+    true,
+    1,
+    "Indikator Merah"
+)
+
+val newPingIntermittent_Response = ChatBotResponse(
+    "Apakah Anda mengalami masalah ping yang terputus-putus?",
+    null,
+    true,
+    1,
+    "Ping Intermittent"
+)
+
+val newNoInternetAccess_Response = ChatBotResponse(
+    "Apakah tidak ada akses internet?",
+    null,
+    true,
+    1,
+    "No Internet Access"
+)
+
+val modemIssues_Question = ChatBotQuestion(
+    "Mari kita mendiagnosis masalah modem lebih lanjut.",
+    listOf(
+        newModemSetting_Response,
+        newModemDown_Response,
+        newModemError_Response,
+        newModemLoss_Response,
+        newAdapterPower_Response,
+        newIndikatorMerah_Response
+    )
+)
+
+val connectionIssues_Question = ChatBotQuestion(
+    "Mari kita mendiagnosis masalah koneksi lebih lanjut.",
+    listOf(
+        newPingIntermittent_Response,
+        newNoInternetAccess_Response
+    )
+)
+
 val noInternet_Response = ChatBotResponse(
     "Wifi terhubung tapi tidak ada Internet?",
-    newTicket_Question,
+    connectionIssues_Question,
     false,
     0
 )
 
 val noWifi_Response = ChatBotResponse(
     "Wifi tidak menyala? Modem tidak Hidup?",
-    newTicket_Question,
+    modemIssues_Question,
     false,
     0
 )
 
 val cannotConnect_Response = ChatBotResponse(
     "Tidak bisa tersambung ke WiFi? Lupa Password WiFi?",
-    newTicket_Question,
+    modemIssues_Question,
     false,
     0
 )
 
 val siteError_Response = ChatBotResponse(
     "Tidak bisa akses situs tertentu Melalui WiFi?",
-    newTicket_Question,
+    connectionIssues_Question,
     false,
     0
 )
 
 val slowInternet_Response = ChatBotResponse(
     "Internet lambat? Download lelet?",
-    newTicket_Question,
+    connectionIssues_Question,
     false,
     0
 )
 
 val other_Response = ChatBotResponse(
     "Gangguan lainnya?",
-    newTicket_Question,
+    modemIssues_Question,
     false,
     0
 )
@@ -126,6 +211,14 @@ val gangguan_Question = ChatBotQuestion(
     )
 )
 
+val changeLocation_Response = ChatBotResponse(
+    "Apakah Anda ingin mengganti posisi modem di rumah Anda?",
+    null,
+    true,
+    1,
+    "Ganti Lokasi Modem"
+)
+
 val ubahGreeting_Response = ChatBotResponse(
     "Apakah anda ingin merubah Data Pelanggan anda?",
     ubahData_Question,
@@ -140,6 +233,18 @@ val gangguanGreeting_Response = ChatBotResponse(
     0
 )
 
+
+val changeLocation_Question = ChatBotQuestion(
+    "Apakah anda ingin mengganti posisi modem di rumah anda?",
+    listOf(changeLocation_Response)
+)
+
+val locationGreeting_Response = ChatBotResponse(
+    "Apakah anda ingin mengganti posisi modem di rumah anda?",
+    changeLocation_Question,
+    false,
+    0
+)
 
 val passwordGreeting_Response = ChatBotResponse(
     "Apakah anda ingin mengubah Password anda?",
@@ -161,7 +266,16 @@ val greeting_Question = ChatBotQuestion(
         ubahGreeting_Response,
         gangguanGreeting_Response,
         passwordGreeting_Response,
+        locationGreeting_Response,
         infoGreeting_Response
+    )
+)
+
+val problem_Question = ChatBotQuestion(
+    "Apa masalah yang anda alami?",
+    listOf(
+        gangguanGreeting_Response,
+        locationGreeting_Response
     )
 )
 

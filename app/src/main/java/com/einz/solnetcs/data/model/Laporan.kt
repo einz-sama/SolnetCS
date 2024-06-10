@@ -16,5 +16,12 @@ data class Laporan(
     val teknisi:String?="",
     val messages:List<Message>?=null,
     val teknisiPhone:String?= whatsapp,
-    val idTeknisi:Int=0
+    val idTeknisi:Int=0,
+    val problem:String?="",
+    val proposed_solution:String?="",
+    val solution:String?="",
+    val time_processed:FirebaseTimestamp?=null,
+    val time_repair_started:FirebaseTimestamp?=null,
+    val time_repair_finished:FirebaseTimestamp?=null,
+    val time_repair_closed:FirebaseTimestamp?=null
 )

@@ -10,6 +10,7 @@ class ChatBotResponse(
     val responseText: String,
     val redirect: ChatBotQuestion?,
     val button: Boolean,
-    val buttonRedirect: Int
+    val buttonRedirect: Int,
+    val problem: String?=""
 ){
 }

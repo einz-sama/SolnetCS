@@ -47,6 +47,10 @@ class NewTicketActivity : AppCompatActivity() {
         binding = ActivityNewTicketBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // get intent extra "problem" from previous activity
+        val problem = intent.getStringExtra("problem")
+
+
         factory = ViewModelFactory.getInstance(this)
 
         viewModel.getCustomer()
@@ -67,14 +71,24 @@ class NewTicketActivity : AppCompatActivity() {
                     finish()
                 }
                 is State.Loading -> {
-
+                    Toast.makeText(this, "Loading...", Toast.LENGTH_SHORT).show()
                 }
+
+
+                else -> {
+                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()}
             }
         }
 
         binding.btnReport.isEnabled = false
 
         populateGangguanSpinner()
+
+        if (problem != null) {
+            // set the problem to select the spinner based on the text of the problem
+            binding.spinnerGangguan.setSelection(gangguan.indexOf(problem))
+        }
+
         populateSpinnerWithAvailableTimes()
         checkValid()
 
@@ -131,6 +145,9 @@ class NewTicketActivity : AppCompatActivity() {
                         is State.Loading -> {
                             Toast.makeText(this, "Loading...", Toast.LENGTH_SHORT).show()
                         }
+
+                        else -> {
+                            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()}
                     }
                 }
             }

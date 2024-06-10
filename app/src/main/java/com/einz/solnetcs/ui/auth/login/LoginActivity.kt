@@ -1,5 +1,6 @@
 package com.einz.solnetcs.ui.auth.login
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,6 +14,8 @@ import com.einz.solnetcs.data.di.ViewModelFactory
 import com.einz.solnetcs.databinding.ActivityLoginBinding
 import com.einz.solnetcs.ui.auth.register.RegisterActivity
 import com.einz.solnetcs.data.State
+import com.einz.solnetcs.ui.auth.register.NewRegisterActivity
+import com.einz.solnetcs.ui.auth.register.VerifyCustomerActivity
 import com.einz.solnetcs.ui.cust.customer.CustomerActivity
 import com.einz.solnetcs.util.ErrorDialog
 
@@ -82,16 +85,17 @@ class LoginActivity : AppCompatActivity() {
 
 
         binding.btnRegister.setOnClickListener{
-            startActivity(Intent(this, RegisterActivity::class.java))
+            startActivity(Intent(this, VerifyCustomerActivity::class.java))
         }
 
 
     }
 
 
+    @SuppressLint("SuspiciousIndentation")
     private fun checkInput(){
-    val textEmail = binding.tfEditEmail.text?.trim().toString()
-     val textPassword = binding.tfEditPassword.text?.trim().toString()
+        val textEmail = binding.tfEditEmail.text?.trim().toString()
+        val textPassword = binding.tfEditPassword.text?.trim().toString()
 
             if(android.util.Patterns.EMAIL_ADDRESS.matcher(textEmail).matches()){
                 if(textPassword.length>7){

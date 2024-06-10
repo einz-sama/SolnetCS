@@ -22,7 +22,12 @@ class ChatBotResponseAdapter(var responses: List<ChatBotResponse>, private val o
             binding.tvText.text = response.responseText
             if (response.button) {
                 binding.btnAction.visibility = View.VISIBLE
-                binding.btnAction.text = getButtonText(response.buttonRedirect)
+                if(response.buttonRedirect == 1){
+                    binding.btnAction.text = response.problem
+                }
+                else{
+                    binding.btnAction.text = getButtonText(response.buttonRedirect)
+                }
                 binding.btnAction.setOnClickListener {
                     onButtonClicked(response)
                 }

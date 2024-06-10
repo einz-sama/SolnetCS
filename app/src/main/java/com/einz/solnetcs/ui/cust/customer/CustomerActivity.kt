@@ -15,6 +15,7 @@ import com.einz.solnetcs.data.State
 import com.einz.solnetcs.data.model.Customer
 import com.einz.solnetcs.ui.auth.login.LoginActivity
 import com.einz.solnetcs.ui.cust.active_ticket.ActiveTicketActivity
+import com.einz.solnetcs.ui.cust.chatbot.ChatBotActivity
 import com.einz.solnetcs.ui.cust.info.FaqActivity
 import com.einz.solnetcs.ui.cust.helpdesk.HelpdeskActivity
 import com.einz.solnetcs.ui.cust.history.HistoryActivity
@@ -131,7 +132,8 @@ class CustomerActivity : AppCompatActivity() {
                                 val intent = Intent(this@CustomerActivity, ActiveTicketActivity::class.java)
                                 startActivity(intent)
                             } else{
-                                val intent = Intent(this@CustomerActivity, NewTicketActivity::class.java)
+                                val intent = Intent(this@CustomerActivity, ChatBotActivity::class.java)
+                                intent.putExtra("isProblem", true)
                                 startActivity(intent)
                             }
 

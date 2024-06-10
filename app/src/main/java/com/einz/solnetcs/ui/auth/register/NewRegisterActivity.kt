@@ -2,7 +2,6 @@ package com.einz.solnetcs.ui.auth.register
 
 import android.content.Intent
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,70 +9,112 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import com.einz.solnetcs.data.di.ViewModelFactory
-import com.einz.solnetcs.data.model.Customer
-import com.einz.solnetcs.databinding.ActivityRegisterBinding
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.einz.solnetcs.R
 import com.einz.solnetcs.data.State
+import com.einz.solnetcs.data.di.ViewModelFactory
+import com.einz.solnetcs.databinding.ActivityNewRegisterBinding
+import com.einz.solnetcs.databinding.ActivityRegisterBinding
 import com.einz.solnetcs.ui.auth.login.LoginActivity
 import com.einz.solnetcs.util.ErrorDialog
 import com.einz.solnetcs.util.phoneValidator
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
-class RegisterActivity : AppCompatActivity() {
+class NewRegisterActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityRegisterBinding
+    private lateinit var binding: ActivityNewRegisterBinding
     private lateinit var factory: ViewModelFactory
     private val viewModel: RegisterViewModel by viewModels{factory}
 
     var location = "Tanjungpinang"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityRegisterBinding.inflate(layoutInflater)
+        binding = ActivityNewRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         factory = ViewModelFactory.getInstance(this)
 
+        viewModel.verifyLiveData.observe(this){result->
+            when(result) {
+                is State.Success -> {
+                    binding.progressBar.visibility = View.GONE
+                    binding.apply{
+                        tfEditFullName.setText(result.data?.namaCustomer)
+                        tfEditAlamat.setText(result.data?.alamatCustomer)
+                        tfEditPhone.setText(result.data?.noTelpCustomer)
+                        tfEditIdPelanggan.setText(result.data?.idCustomer.toString())
+                        if(result.data?.daerahCustomer.equals("Tanjungpinang")){
+                            spinnerLocation.setSelection(0)
+                        }
+                        else if(result.data?.daerahCustomer.equals("Bintan")){
+                            spinnerLocation.setSelection(1)
+                        }
+
+                        freezeLayout(tfLayoutFullName)
+                        freezeLayout(tfLayoutAlamat)
+                        freezeLayout(tfLayoutPhone)
+                        freezeLayout(tfLayoutIdPelanggan)
+
+                        freezeField(tfEditFullName)
+                        freezeField(tfEditAlamat)
+                        freezeField(tfEditPhone)
+                        freezeField(tfEditIdPelanggan)
+
+                        spinnerLocation.isEnabled = false
+
+                    }
+
+                }
+
+                is State.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+
+                is State.Error -> {
+                    binding.progressBar.visibility = View.GONE
+                }
+            }
+        }
 
         binding.btnRegister.isEnabled = false
 
         binding.btnRegister.setOnClickListener{
             val email = binding.tfEditEmail.text?.trim().toString()
             val password = binding.tfEditPassword.text?.trim().toString()
-            val name = binding.tfEditFullName.text?.trim().toString()
-            var phone = binding.tfEditPhone.text?.trim().toString()
-            phone = phoneValidator(this@RegisterActivity, phone)
-            val address = binding.tfEditAlamat.text?.trim().toString()
             val idPelanggan = binding.tfEditIdPelanggan.text?.trim().toString()
 
-            try{
-                val dataCust = Customer(
-                    idPelanggan.toInt(),
-                    email,
-                    name,
-                    address,
-                    location,
-                    phone
-                )
-                viewModel.register(dataCust, password)
-            }
-            catch(e: Exception){
-                showError(e.message.toString())
+            viewModel.newRegister(idPelanggan.toInt(), email, password)
+        }
+
+        viewModel.userLiveData.observe(this){result->
+            when(result) {
+                is State.Success -> {
+                    binding.progressBar.visibility = View.GONE
+                    val intent = Intent(this, LoginActivity::class.java)
+                    Toast.makeText(this, "Pendaftara Berhasil, silahkan masuk", Toast.LENGTH_SHORT).show()
+                    startActivity(intent)
+                    finish()
+                }
+
+                is State.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+
+                is State.Error -> {
+                    binding.progressBar.visibility = View.GONE
+                    showError(result.errorMessage)
+                }
             }
         }
 
-        viewModel.userLiveData.observe(this) { result->
-            when (result) {
-                is State.Loading -> showLoading(true)
-                is State.Success -> registerSuccess()
-                is State.Error -> showError(result.errorMessage)
-            }
-        }
 
-        setupSpinner()
         checkValid()
-
+        setupSpinner()
     }
 
     private fun setupSpinner() {
@@ -99,7 +140,6 @@ class RegisterActivity : AppCompatActivity() {
 
         }
     }
-
     private fun checkInput(){
         val textEmail = binding.tfEditEmail.text?.trim().toString()
         val textPassword = binding.tfEditPassword.text?.trim().toString()
@@ -154,7 +194,7 @@ class RegisterActivity : AppCompatActivity() {
             isValid = false
         } else {
             binding.tfLayoutPhone.error = null
-            if( phoneValidator(this@RegisterActivity, textPhone).isEmpty() ){
+            if( phoneValidator(this@NewRegisterActivity, textPhone).isEmpty() ){
                 binding.tfLayoutPhone.error = "Nomor Telepon tidak valid"
                 isValid = false
             }
@@ -252,22 +292,6 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun showLoading(state: Boolean) {
-        if (state) {
-            binding.progressBar.visibility = View.VISIBLE
-        } else {
-            binding.progressBar.visibility = View.GONE
-        }
-    }
-
-    private fun registerSuccess() {
-        binding.progressBar.visibility = View.GONE
-        Toast.makeText(this, "Pendaftaran Berhasil, silahkan login", Toast.LENGTH_SHORT).show()
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
-        finish()
-    }
-
     // show error using a message box with an OK button to continue
     private fun showError(message: String) {
         binding.progressBar.visibility = View.GONE
@@ -291,5 +315,4 @@ class RegisterActivity : AppCompatActivity() {
     private fun freezeLayout(textInputLayout: TextInputLayout){
         textInputLayout.boxStrokeColor = Color.parseColor("#000000") // Custom disabled box stroke color
     }
-
 }

@@ -29,8 +29,19 @@ class ChatBotActivity : AppCompatActivity() {
         binding.rvQuestion.layoutManager = LinearLayoutManager(this)
         binding.rvQuestion.adapter = questionAdapter
 
+        var firstQuestion = greeting_Question
+
+        val isProblem = intent.getBooleanExtra("isProblem", false)
+        if(isProblem) {
+            firstQuestion = problem_Question
+        }
+        else {
+            firstQuestion = greeting_Question
+        }
+
+
+
         // Load the first question
-        val firstQuestion = greeting_Question
         loadQuestion(firstQuestion)
     }
 
@@ -39,6 +50,9 @@ class ChatBotActivity : AppCompatActivity() {
         when (response.buttonRedirect) {
             1 -> {
                 val intent = Intent(this, NewTicketActivity::class.java)
+                if(response.problem != null){
+                    intent.putExtra("problem", response.problem)
+                }
                 startActivity(intent)
             }
             2 -> {

@@ -11,7 +11,7 @@ fun phoneValidator(context: Context, phoneNumber: String): String {
     val matchResult = regexPattern.find(phoneNumber)
 
     if(matchResult == null) {
-        Toast.makeText(context, "Nomor telpon tidak valid!", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context, "Nomor telpon tidak valid!", Toast.LENGTH_SHORT).show()
         return ""
     }
     else{

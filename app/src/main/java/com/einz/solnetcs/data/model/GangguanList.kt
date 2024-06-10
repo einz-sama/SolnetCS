@@ -1,3 +1,11 @@
 package com.einz.solnetcs.data.model
 
-val gangguan = arrayListOf("Tidak ada Internet", "Wifi tidak menyala", "Tidak bisa akses situs", "Internet lambat", "Tidak bisa masuk Wifi","Lainya")
+val gangguan = arrayListOf("Modem Down",
+                            "Modem Error",
+                            "Modem Loss",
+                            "Adapter Power",
+                            "Seting Modem",
+                            "Ganti Lokasi Modem",
+                            "Indikator Merah",
+                            "Ping Intermittent",
+                            "No Internet Access")

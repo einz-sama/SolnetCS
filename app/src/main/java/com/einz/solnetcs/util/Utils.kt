@@ -74,3 +74,12 @@ fun formatFirebaseTimestamp(firebaseTimestamp: FirebaseTimestamp?): String {
     }
     return "Unknown Date" // Return a default or error string if timestamp is null
 }
+
+fun formatPhoneNumber(phoneNumber: String): String {
+    return when {
+        phoneNumber.startsWith("08") -> phoneNumber.replaceFirst("08", "+628")
+        phoneNumber.startsWith("8") -> "+62$phoneNumber"
+        phoneNumber.startsWith("+628") -> phoneNumber
+        else -> phoneNumber
+    }
+}

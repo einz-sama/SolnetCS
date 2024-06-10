@@ -3,6 +3,7 @@ package com.einz.solnetcs.data
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.einz.solnetcs.data.model.Customer
+import com.einz.solnetcs.data.model.FirebaseTimestamp
 import com.einz.solnetcs.data.model.Laporan
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -10,6 +11,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.einz.solnetcs.util.formatPhoneNumber
 
 class Repository(private val context: Context) {
 
@@ -20,6 +22,7 @@ class Repository(private val context: Context) {
     val customerLiveData: MutableLiveData<State<Customer?>> = MutableLiveData()
     val checkCustomerLiveData: MutableLiveData<State<Customer?>> = MutableLiveData()
 
+    val verifyCustomerLiveData: MutableLiveData<State<Customer?>> = MutableLiveData()
     val registerSuccessLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
     val loginSuccessLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
     val loggedOutLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
@@ -39,6 +42,108 @@ class Repository(private val context: Context) {
         if (firebaseAuth.currentUser != null) {
             userLiveData.postValue(State.Success(firebaseAuth.currentUser))
         }
+    }
+
+    fun verifyCustomer(idCustomer: String, noTelpCustomer: String) {
+        verifyCustomerLiveData.postValue(State.Loading)
+
+        try {
+            val formattedPhone = formatPhoneNumber(noTelpCustomer)
+            val databaseReference = db.getReference("customers")
+            val idCust = idCustomer.toDouble()
+
+            databaseReference.orderByChild("idCustomer").equalTo(idCust)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            var customerFound = false
+                            for (customerSnapshot in snapshot.children) {
+                                val customer = customerSnapshot.getValue(Customer::class.java)
+                                if (customer != null) {
+                                    val formattedCustomerPhone = formatPhoneNumber(customer.noTelpCustomer)
+                                    if (formattedCustomerPhone == formattedPhone) {
+                                        verifyCustomerLiveData.postValue(State.Success(customer))
+                                        customerFound = true
+                                        break
+                                    } else {
+                                        verifyCustomerLiveData.postValue(State.Error("Nomor telepon tidak sama"))
+                                    }
+                                }
+                            }
+                            if (!customerFound) {
+                                verifyCustomerLiveData.postValue(State.Error("ID Customer tidak ditemukan"))
+                            }
+                        } else {
+                            verifyCustomerLiveData.postValue(State.Error("Pengecekan Gagal"))
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        verifyCustomerLiveData.postValue(State.Error(error.message))
+                    }
+                })
+        } catch (e: Exception) {
+            verifyCustomerLiveData.postValue(State.Error(e.message ?: "Unknown error"))
+        }
+    }
+
+    fun newregister(idCustomer: Int, email: String, password: String) {
+        registerSuccessLiveData.postValue(State.Loading)
+
+        // Step 1: Create a new Firebase Authentication user
+        firebaseAuth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // User created successfully
+                    val userId = firebaseAuth.currentUser?.uid
+
+                    // Step 2: Verify the customer exists
+                    verifyCustomerById(idCustomer) { customer ->
+                        if (customer != null) {
+                            // Customer exists, update the email
+                            updateCustomerEmail(idCustomer, email)
+                        } else {
+                            // Customer does not exist
+                            registerSuccessLiveData.postValue(State.Error("Customer ID not found"))
+                        }
+                    }
+                } else {
+                    // Handle duplicate email error
+                    val errorMessage = task.exception?.message ?: "Registration failed"
+                    registerSuccessLiveData.postValue(State.Error(errorMessage))
+                }
+            }
+    }
+
+    private fun verifyCustomerById(idCustomer: Int, callback: (Customer?) -> Unit) {
+        val databaseReference = db.getReference("customers")
+        databaseReference.child(idCustomer.toString())
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        val customer = snapshot.getValue(Customer::class.java)
+                        callback(customer)
+                    } else {
+                        callback(null)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    callback(null)
+                }
+            })
+    }
+
+    private fun updateCustomerEmail(idCustomer: Int, email: String) {
+        val databaseReference = db.getReference("customers").child(idCustomer.toString())
+        val updates = hashMapOf<String, Any>("email" to email)
+        databaseReference.updateChildren(updates)
+            .addOnSuccessListener {
+                registerSuccessLiveData.postValue(State.Success(true))
+            }
+            .addOnFailureListener { exception ->
+                registerSuccessLiveData.postValue(State.Error(exception.message ?: "Failed to update customer email"))
+            }
     }
 
     suspend fun register(customer: Customer, password: String) {
@@ -452,7 +557,7 @@ class Repository(private val context: Context) {
             })
     }
 
-    fun finishLaporan(idLaporan: String, newStatus: Int = 3) {
+    fun finishLaporan(idLaporan: String, newStatus: Int = 4) {
 //        laporanDoneLiveData.postValue(Result.Loading)
 
         // Step 1: Find and update the Laporan status
@@ -466,7 +571,15 @@ class Repository(private val context: Context) {
                         val laporan = reportSnapshot.getValue(Laporan::class.java)
                         if (laporan?.idLaporan == idLaporan) {
                             // Update Laporan status
+                            val time_finish_seconds = System.currentTimeMillis() / 1000
+                            val time_finish_nanos = System.currentTimeMillis() % 1000 * 1000000
+                            val time_finish = FirebaseTimestamp()
+                            time_finish.seconds = time_finish_seconds
+                            time_finish.nanoseconds = time_finish_nanos.toInt()
+
                             reportSnapshot.ref.child("status").setValue(newStatus)
+                            reportSnapshot.ref.child("time_repair_closed").setValue(time_finish)
+
 
                             val idTeknisi = laporan.idTeknisi
                             if (idTeknisi != null) {

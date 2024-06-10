@@ -82,9 +82,38 @@ class InactiveTicketActivity : AppCompatActivity() {
                         "Waktu tidak ditentukan"
                     }
 
+                    val time_process = laporan.data?.time_processed?.toTimestamp()?.toDate()
+                    val formatted_time_process = if (time_process != null) {
+                        SimpleDateFormat("dd MMMM yyyy HH:mm", Locale.getDefault()).format(time_process)
+                    } else {
+                        "Waktu tidak ditentukan"
+                    }
+
+                    val time_start = laporan.data?.time_repair_started?.toTimestamp()?.toDate()
+                    val formatted_time_start = if (time_start != null) {
+                        SimpleDateFormat("dd MMMM yyyy HH:mm", Locale.getDefault()).format(time_start)
+                    } else {
+                        "Waktu tidak ditentukan"
+                    }
+
+
+                    val time_finish = laporan.data?.time_repair_finished?.toTimestamp()?.toDate()
+                    val formatted_time_finish = if (time_finish != null) {
+                        SimpleDateFormat("dd MMMM yyyy HH:mm", Locale.getDefault()).format(time_finish)
+                    } else {
+                        "Waktu tidak ditentukan"
+                    }
+
+                    val time_closed = laporan.data?.time_repair_closed?.toTimestamp()?.toDate()
+                    val formatted_time_closed = if (time_closed != null) {
+                        SimpleDateFormat("dd MMMM yyyy HH:mm", Locale.getDefault()).format(time_closed)
+                    } else {
+                        "Waktu tidak ditentukan"
+                    }
+
                     binding.apply{
                         tvDateReported.text = formattedTimeStamp
-                        tvInfo.text = "Perbaikan diharapkan pada $formattedDesiredTime"
+                        tvInfo.text = "Penanganan diharapkan pada $formattedDesiredTime"
                         tvNoReferensi.text = laporan.data?.idLaporan
                         tvJenisGangguan.text = laporan.data?.kategori
 
@@ -104,13 +133,13 @@ class InactiveTicketActivity : AppCompatActivity() {
                                 tvProgress0.text = "Laporan sedang diproses"
 
                                 dotProgress1.setBackgroundResource(R.drawable.progress_dot_inactive)
-                                tvProgress1.text = "Menunggu perbaikan"
+                                tvProgress1.text = "Menunggu Penanganan"
 
                                 dotProgress2.setBackgroundResource(R.drawable.progress_dot_inactive)
-                                tvProgress2.text = "Konfirmasi Perbaikan"
+                                tvProgress2.text = "Konfirmasi Penanganan"
 
                                 dotProgress3.setBackgroundResource(R.drawable.progress_dot_inactive)
-                                tvProgress3.text = "Perbaikan Selesai"
+                                tvProgress3.text = "Penanganan Selesai"
                             }
 
 
@@ -128,15 +157,16 @@ class InactiveTicketActivity : AppCompatActivity() {
 
                                 dotProgress0.setBackgroundResource(R.drawable.progress_dot)
                                 tvProgress0.text = "Laporan sudah diproses"
+                                tvProgress0Timestamp.text = formatted_time_process
 
                                 dotProgress1.setBackgroundResource(R.drawable.progress_dot)
-                                tvProgress1.text = "Perbaikan sedang dilakukan"
+                                tvProgress1.text = "Penanganan sedang dilakukan"
 
                                 dotProgress2.setBackgroundResource(R.drawable.progress_dot_inactive)
-                                tvProgress2.text = "Konfirmasi Perbaikan"
+                                tvProgress2.text = "Konfirmasi Penanganan"
 
                                 dotProgress3.setBackgroundResource(R.drawable.progress_dot_inactive)
-                                tvProgress3.text = "Perbaikan Selesai"
+                                tvProgress3.text = "Penanganan Selesai"
                             }
 
                         }
@@ -148,20 +178,22 @@ class InactiveTicketActivity : AppCompatActivity() {
                                 fabChat.visibility = View.VISIBLE
                                 btnConfirm.visibility = View.VISIBLE
 
-                                tvTeknisi.text = "Menunggu Konfirmasi Perbaikan Selesai"
+                                tvTeknisi.text = "Menunggu Konfirmasi Penanganan Selesai"
                                 tvTeknisiDesc.text = laporan.data.teknisi
 
                                 dotProgress0.setBackgroundResource(R.drawable.progress_dot)
                                 tvProgress0.text = "Laporan sudah diproses"
+                                tvProgress0Timestamp.text = formatted_time_process
 
                                 dotProgress1.setBackgroundResource(R.drawable.progress_dot)
-                                tvProgress1.text = "Perbaikan sudah selesai"
+                                tvProgress1.text = "Penanganan sudah selesai"
+                                tvProgress1Timestamp.text = formatted_time_start
 
                                 dotProgress2.setBackgroundResource(R.drawable.progress_dot)
                                 tvProgress2.text = "Menunggu konfirmasi"
 
                                 dotProgress3.setBackgroundResource(R.drawable.progress_dot_inactive)
-                                tvProgress3.text = "Perbaikan Selesai"
+                                tvProgress3.text = "Penanganan Selesai"
 
                                 btnConfirm.visibility = View.VISIBLE
                             }
@@ -175,20 +207,23 @@ class InactiveTicketActivity : AppCompatActivity() {
                                 fabChat.visibility = View.VISIBLE
                                 btnConfirm.visibility = View.GONE
 
-                                tvTeknisi.text = "Perbaikan telah selesai dilakukan"
-                                tvTeknisiDesc.text = laporan.data.teknisi
+                                tvTeknisi.text = "Penanganan telah selesai dilakukan"
+                                tvTeknisiDesc.text = "oleh ${laporan.data?.teknisi} : ${laporan.data?.solution} "
 
                                 dotProgress0.setBackgroundResource(R.drawable.progress_dot)
                                 tvProgress0.text = "Laporan sudah diproses"
+                                tvProgress0Timestamp.text = formatted_time_process
 
                                 dotProgress1.setBackgroundResource(R.drawable.progress_dot)
-                                tvProgress1.text = "Perbaikan sudah selesai"
+                                tvProgress1.text = "Penanganan sudah selesai"
+                                tvProgress1Timestamp.text = formatted_time_start
 
                                 dotProgress2.setBackgroundResource(R.drawable.progress_dot)
-                                tvProgress2.text = "Perbaikan dikonfirmasi"
+                                tvProgress2.text = "Penanganan dikonfirmasi"
+                                tvProgress2Timestamp.text = formatted_time_finish
 
                                 dotProgress3.setBackgroundResource(R.drawable.progress_dot)
-                                tvProgress3.text = "Perbaikan Selesai"
+                                tvProgress3.text = "Penanganan Selesai"
 
                             }
 
@@ -206,20 +241,24 @@ class InactiveTicketActivity : AppCompatActivity() {
                                     finish()
                                 }
 
-                                tvTeknisi.text = "Perbaikan telah selesai dilakukan"
-                                tvTeknisiDesc.text = laporan.data.teknisi
+                                tvTeknisi.text = "Tiket Pengaduan Ditutup"
+                                tvTeknisiDesc.text = "oleh ${laporan.data?.teknisi} : ${laporan.data?.solution} "
 
                                 dotProgress0.setBackgroundResource(R.drawable.progress_dot)
                                 tvProgress0.text = "Laporan sudah diproses"
+                                tvProgress0Timestamp.text = formatted_time_process
 
                                 dotProgress1.setBackgroundResource(R.drawable.progress_dot)
-                                tvProgress1.text = "Perbaikan sudah selesai"
+                                tvProgress1.text = "Penanganan sudah selesai"
+                                tvProgress1Timestamp.text = formatted_time_start
 
                                 dotProgress2.setBackgroundResource(R.drawable.progress_dot)
-                                tvProgress2.text = "Perbaikan dikonfirmasi"
+                                tvProgress2.text = "Penanganan dikonfirmasi"
+                                tvProgress2Timestamp.text = formatted_time_finish
 
                                 dotProgress3.setBackgroundResource(R.drawable.progress_dot)
-                                tvProgress3.text = "Perbaikan Selesai"
+                                tvProgress3.text = "Penanganan Selesai"
+                                tvProgress3Timestamp.text = formatted_time_closed
 
                             }
 
