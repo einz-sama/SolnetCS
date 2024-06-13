@@ -407,14 +407,21 @@ class Repository(private val context: Context) {
                     // Iterate through each report under a customer ID
                     customerReportsSnapshot.children.forEach { reportSnapshot ->
                         val report = reportSnapshot.getValue(Laporan::class.java)
-                        // Check if the report's status is '0'
+                        // Check if the report's status is '4'
                         if (report?.status == 4) {
-                            if (report?.idCustomer == idCust) {
+                            if (report.idCustomer == idCust) {
                                 report?.let { allReports.add(it) }
                             }
                         }
                     }
                 }
+
+                // Sort reports by timestamp from latest to oldest
+                allReports.sortWith(compareByDescending<Laporan> {
+                    it.timestamp?.seconds
+                }.thenByDescending {
+                    it.timestamp?.nanoseconds
+                })
 
                 laporanListLiveData.postValue(State.Success(allReports))
             }
@@ -623,6 +630,8 @@ class Repository(private val context: Context) {
     fun resetLaporanDone(){
         laporanDoneLiveData.postValue(State.Loading)
     }
+
+
 
 
 
