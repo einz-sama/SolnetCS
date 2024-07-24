@@ -144,10 +144,6 @@ class NewRegisterActivity : AppCompatActivity() {
         val textEmail = binding.tfEditEmail.text?.trim().toString()
         val textPassword = binding.tfEditPassword.text?.trim().toString()
         val textConfirm = binding.tfEditPasswordConfirm.text?.trim().toString()
-        val textName = binding.tfEditFullName.text?.trim().toString()
-        val textPhone = binding.tfEditPhone.text?.trim().toString()
-        val textAddress = binding.tfEditAlamat.text?.trim().toString()
-        val idPelanggan = binding.tfEditIdPelanggan.text?.trim().toString()
 
         val location = binding.spinnerLocation.selectedItem.toString()
 
@@ -182,40 +178,7 @@ class NewRegisterActivity : AppCompatActivity() {
             binding.tfLayoutPasswordConfirm.error = null
         }
 
-        if (textName.isEmpty()) {
-            binding.tfLayoutFullName.error = "Isi Nama Lengkap"
-            isValid = false
-        } else {
-            binding.tfLayoutFullName.error = null
-        }
 
-        if (textPhone.isEmpty()) {
-            binding.tfLayoutPhone.error = "Isi Nomor Telpon"
-            isValid = false
-        } else {
-            binding.tfLayoutPhone.error = null
-            if( phoneValidator(this@NewRegisterActivity, textPhone).isEmpty() ){
-                binding.tfLayoutPhone.error = "Nomor Telepon tidak valid"
-                isValid = false
-            }
-            else{
-                binding.tfLayoutPhone.error = null
-            }
-        }
-
-        if (textAddress.isEmpty()) {
-            binding.tfLayoutAlamat.error = "Isi Alamat"
-            isValid = false
-        } else {
-            binding.tfLayoutAlamat.error = null
-        }
-
-        if (idPelanggan.length <6) {
-            binding.tfLayoutIdPelanggan.error = "ID Pelanggan Anda"
-            isValid = false
-        } else {
-            binding.tfLayoutIdPelanggan.error = null
-        }
 
         binding.btnRegister.isEnabled = isValid
     }

@@ -37,7 +37,7 @@
         android:fontFamily="@font/ubuntu_medium"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tfLayout_Phone"
+        app:layout_constraintTop_toBottomOf="@id/spinner_location"
         app:layout_goneMarginTop="16dp" />
 
     <ImageView
@@ -75,12 +75,41 @@
             android:inputType="text|phone"/>
     </com.google.android.material.textfield.TextInputLayout>
 
+    <ImageView
+        android:id="@+id/iv_Map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:contentDescription="@string/icon_username"
+        android:src="@drawable/ic_map"
+        android:visibility="gone"
+        app:tint="@color/solnet_blue_600"
+        app:layout_constraintBottom_toBottomOf="@+id/spinner_location"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/spinner_location"
+        app:layout_goneMarginTop="16dp" />
+
+    <Spinner
+        android:id="@+id/spinner_location"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="24dp"
+        android:visibility="gone"
+        android:background="@drawable/button_secondary"
+        android:fontFamily="@font/ubuntu_regular"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_Map"
+        app:layout_constraintTop_toBottomOf="@id/tfLayout_Phone"
+        app:layout_constraintVertical_bias="0.0" />
+
     <TextView
         android:id="@+id/tv_IdPelanggan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="SI-TP"
+        android:text="CS ID"
         android:textSize="18sp"
         android:fontFamily="@font/ubuntu_regular"
         app:layout_constraintBottom_toBottomOf="@+id/tfLayout_IdPelanggan"

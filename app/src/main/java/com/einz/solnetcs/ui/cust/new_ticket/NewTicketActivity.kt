@@ -116,7 +116,7 @@ class NewTicketActivity : AppCompatActivity() {
                 kategoriKeluhan,
                 deskripsiKeluhan,
                 0,
-                waktuKeluhan,
+                firebaseTimestampNow,
                 firebaseTimestampNow,
                 telponCustomer,
                 "",
@@ -126,8 +126,9 @@ class NewTicketActivity : AppCompatActivity() {
             //message dialog to confirm if user want to submit the report, showing current address and preferred time
             val dialog = android.app.AlertDialog.Builder(this)
             dialog.setTitle("Konfirmasi")
-            val formattedTime = SimpleDateFormat("dd MMM HH:mm", Locale.getDefault()).format(waktuKeluhan.toTimestamp().toDate())
-            dialog.setMessage("Laporkan gangguan di \n$alamatCustomer\nTeknisi akan datang pada\n$formattedTime")
+//            val formattedTime = SimpleDateFormat("dd MMM HH:mm", Locale.getDefault()).format(waktuKeluhan.toTimestamp().toDate())
+            val formattedTime = SimpleDateFormat("dd MMM HH:mm", Locale.getDefault()).format(firebaseTimestampNow.toTimestamp().toDate())
+            dialog.setMessage("Baik \n Terkait hal berikut akan kami infokan ke tim teknisi kami agar dilakukan pengecekan ya. \n Untuk laporannya akan dikerjakan dalam kurun waktu 1x24Jam, \n Mohon ditunggu ya, tim kami akan menghubungi terlebih dahulu untuk mengkonfirmasi jika akan kelokasi. \n Terimakasih ")
             dialog.setPositiveButton("Ya") { _, _ ->
                 viewModel.createLaporan(idCustomer,Laporan)
                 viewModel.createLaporanLiveData.observe(this){
@@ -283,12 +284,12 @@ class NewTicketActivity : AppCompatActivity() {
             binding.btnReport.isEnabled = false
             return
         }
-        if(waktuKeluhan == null){
-            binding.btnReport.error = "Mohon pilih waktu gangguan"
-            binding.spinnerSelectTime.requestFocus()
-            binding.btnReport.isEnabled = false
-            return
-        }
+//        if(waktuKeluhan == null){
+//            binding.btnReport.error = "Mohon pilih waktu gangguan"
+//            binding.spinnerSelectTime.requestFocus()
+//            binding.btnReport.isEnabled = false
+//            return
+//        }
 
         binding.btnReport.error = null
         binding.btnReport.isEnabled = true

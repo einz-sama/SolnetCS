@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +25,8 @@ class VerifyCustomerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityVerifyCustomerBinding
     private lateinit var factory: ViewModelFactory
     private val viewModel: RegisterViewModel by viewModels{factory}
+
+    var location = "Tanjungpinang"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityVerifyCustomerBinding.inflate(layoutInflater)
@@ -32,7 +36,9 @@ class VerifyCustomerActivity : AppCompatActivity() {
 
         binding.btnRegister.isEnabled = false
 
+
         checkInput()
+        setupSpinner()
 
         binding.btnRegister.setOnClickListener {
             val idPelanggan = binding.tfEditIdPelanggan.text?.trim().toString()
@@ -41,6 +47,23 @@ class VerifyCustomerActivity : AppCompatActivity() {
             viewModel.verifyCustomer(idPelanggan, textPhone)
 
             binding.progressBar.visibility = View.VISIBLE
+        }
+
+        binding.spinnerLocation.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                location = binding.spinnerLocation.selectedItem.toString()
+                checkValid()
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                binding.spinnerLocation.setSelection(0)
+            }
+
         }
 
         viewModel.verifyLiveData.observe(this){result->
@@ -70,7 +93,16 @@ class VerifyCustomerActivity : AppCompatActivity() {
         val idPelanggan = binding.tfEditIdPelanggan.text?.trim().toString()
         val textPhone = binding.tfEditPhone.text?.trim().toString()
 
+        val location = binding.spinnerLocation.selectedItem.toString()
+
         var isValid = true
+
+        if(location.equals("Tanjungpinang")){
+            binding.tvIdPelanggan.text = "SI-TP"
+        }
+        else if(location.equals("Bintan")){
+            binding.tvIdPelanggan.text = "SI-BTN"
+        }
 
         if (textPhone.isEmpty()) {
             binding.tfLayoutPhone.error = "Isi Nomor Telpon"
@@ -111,8 +143,45 @@ class VerifyCustomerActivity : AppCompatActivity() {
             }
             override fun afterTextChanged(string: Editable?) {}
         })
+        binding.spinnerLocation.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) { checkValid() }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                binding.spinnerLocation.setSelection(1)
+            }
+
+        }
 
 
+    }
+
+    private fun setupSpinner() {
+
+        val enumLocation = arrayOf<String?>("Tanjungpinang", "Bintan")
+        val locationSpinner = binding.spinnerLocation
+        val locationAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, enumLocation)
+        locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        locationSpinner.adapter = locationAdapter
+        locationSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                location = locationSpinner.selectedItem.toString()
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                locationSpinner.setSelection(0)
+            }
+
+        }
     }
 
     private fun showError(message: String) {

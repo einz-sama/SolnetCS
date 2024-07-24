@@ -134,7 +134,7 @@ class ActiveTicketActivity : AppCompatActivity() {
                                             view1.visibility = View.VISIBLE
                                             tvInfo.visibility = View.VISIBLE
 
-                                            tvInfo.text = "Teknisi akan datang pada: \n $formattedDesiredTime"
+                                            tvInfo.text = "Laporan akan dikerjakan dalam kurun waktu 1x24 jam"
                                             tvProgress0Timestamp.text = formattedTimeStamp
                                             fabChat.visibility = View.GONE
                                             btnConfirm.visibility = View.GONE
@@ -196,7 +196,7 @@ class ActiveTicketActivity : AppCompatActivity() {
                                             tvProgress0Timestamp.text = formatted_time_process
 
                                             dotProgress1.setBackgroundResource(R.drawable.progress_dot)
-                                            tvProgress1.text = "Penanganan sedang ditangani"
+                                            tvProgress1.text = "laporan sedang ditangani"
                                             tvProgress1Timestamp.text = formatted_time_start
 
                                             dotProgress2.setBackgroundResource(R.drawable.progress_dot_inactive)
@@ -225,7 +225,7 @@ class ActiveTicketActivity : AppCompatActivity() {
                                             tvProgress0Timestamp.text = formatted_time_process
 
                                             dotProgress1.setBackgroundResource(R.drawable.progress_dot)
-                                            tvProgress1.text = "Penanganan sudah selesai"
+                                            tvProgress1.text = "Laporan sudah selesai"
                                             tvProgress1Timestamp.text = formatted_time_start
 
                                             dotProgress2.setBackgroundResource(R.drawable.progress_dot)
@@ -254,11 +254,11 @@ class ActiveTicketActivity : AppCompatActivity() {
                                             tvProgress0Timestamp.text = formatted_time_process
 
                                             dotProgress1.setBackgroundResource(R.drawable.progress_dot)
-                                            tvProgress1.text = "Penanganan sudah selesai"
+                                            tvProgress1.text = "Laporan sudah selesai"
                                             tvProgress1Timestamp.text = formatted_time_start
 
                                             dotProgress2.setBackgroundResource(R.drawable.progress_dot)
-                                            tvProgress2.text = "Penanganan dikonfirmasi"
+                                            tvProgress2.text = "Laporan dikonfirmasi"
                                             tvProgress2Timestamp.text = formatted_time_finish
 
                                             dotProgress3.setBackgroundResource(R.drawable.progress_dot)

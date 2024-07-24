@@ -71,8 +71,9 @@ class RegisterActivity : AppCompatActivity() {
             }
         }
 
-        setupSpinner()
+
         checkValid()
+        setupSpinner()
 
     }
 
