@@ -77,7 +77,7 @@ class ActiveTicketActivity : AppCompatActivity() {
                                         // WhatsApp not installed, open Contacts app to add a new contact
                                         val intent = Intent(Intent.ACTION_INSERT, ContactsContract.Contacts.CONTENT_URI).apply {
                                             putExtra(ContactsContract.Intents.Insert.PHONE, teknisiPhone)
-                                            putExtra(ContactsContract.Intents.Insert.NAME, teknisiName)
+                                            putExtra(ContactsContract.Intents.Insert.NAME, teknisiName+" Teknisi Solnet")
                                         }
                                         startActivity(intent)
                                     }
