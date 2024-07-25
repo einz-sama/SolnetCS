@@ -27,6 +27,7 @@ class Repository(private val context: Context) {
     val loginSuccessLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
     val loggedOutLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
     val resetPasswordLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
+    val verifiedCustomerLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
 
     val changePasswordLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
     val changeAlamatLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
@@ -116,6 +117,30 @@ class Repository(private val context: Context) {
             }
     }
 
+    fun checkIfCustomer(email:String){
+        verifiedCustomerLiveData.postValue(State.Loading)
+        val databaseReference = db.getReference("customers")
+        databaseReference.orderByChild("email").equalTo(email)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        for (userSnapshot in snapshot.children) {
+                            val customer = userSnapshot.getValue(Customer::class.java)
+                            customer?.let {
+                                verifiedCustomerLiveData.postValue(State.Success(true))
+                            }
+                        }
+                    } else {
+                        verifiedCustomerLiveData.postValue(State.Error("Email tidak terdaftar sebagai Customer"))
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    verifiedCustomerLiveData.postValue(State.Error(error.message))
+                }
+            })
+    }
+
     private fun verifyCustomerById(idCustomer: Int, callback: (Customer?) -> Unit) {
         val databaseReference = db.getReference("customers")
         databaseReference.child(idCustomer.toString())
@@ -147,7 +172,7 @@ class Repository(private val context: Context) {
             }
     }
 
-    suspend fun register(customer: Customer, password: String) {
+     fun register(customer: Customer, password: String) {
         userLiveData.postValue(State.Loading)
 
         try {
@@ -177,7 +202,7 @@ class Repository(private val context: Context) {
         }
     }
 
-    suspend fun login(email: String, password: String) {
+     fun login(email: String, password: String) {
         userLiveData.postValue(State.Loading)
 
         try {
@@ -195,8 +220,8 @@ class Repository(private val context: Context) {
         }
     }
 
-    // implement firebase password reset via email
-    suspend fun resetPassword(email: String) {
+    // to reset password, email must be confirmed first as a registered customer
+     fun resetPassword(email: String) {
         resetPasswordLiveData.postValue(State.Loading)
 
         try {
@@ -213,13 +238,13 @@ class Repository(private val context: Context) {
         }
     }
 
-    suspend fun logout() {
+     fun logout() {
         loggedOutLiveData.postValue(State.Success(true))
         firebaseAuth.signOut()
 
 
     }
-    suspend fun getCustomerData() {
+     fun getCustomerData() {
         customerLiveData.postValue(State.Loading)
         try {
             val userEmail = firebaseAuth.currentUser?.email ?: return
@@ -249,7 +274,7 @@ class Repository(private val context: Context) {
         }
     }
 
-    suspend fun checkCustomerData() {
+     fun checkCustomerData() {
         checkCustomerLiveData.postValue(State.Loading)
         try {
             val userEmail = firebaseAuth.currentUser?.email ?: return
@@ -279,7 +304,7 @@ class Repository(private val context: Context) {
         }
     }
 
-    suspend fun createLaporan(idCustomer: String, laporan: Laporan) {
+     fun createLaporan(idCustomer: String, laporan: Laporan) {
         createLaporanLiveData.postValue(State.Loading)
         try {
             val databaseReference = FirebaseDatabase.getInstance().getReference("reports")
@@ -295,7 +320,7 @@ class Repository(private val context: Context) {
         }
     }
 
-    suspend fun getActiveLaporanByIdCust(idCustomer: String) {
+     fun getActiveLaporanByIdCust(idCustomer: String) {
         getLaporanLiveData.postValue(State.Loading)
 
         try {
@@ -330,7 +355,7 @@ class Repository(private val context: Context) {
     }
 
 
-    suspend fun updateLaporanStatus(idCustomer: String, idLaporan: String, newStatus: Int) {
+     fun updateLaporanStatus(idCustomer: String, idLaporan: String, newStatus: Int) {
         laporanDoneLiveData.postValue(State.Loading)
         val reportRef = FirebaseDatabase.getInstance().getReference("reports/$idCustomer/$idLaporan")
 
@@ -378,7 +403,7 @@ class Repository(private val context: Context) {
             }
     }
 
-    suspend fun checkActiveLaporanByIdCust(idCustomer: String) {
+     fun checkActiveLaporanByIdCust(idCustomer: String) {
 //        checkLaporanLiveData.postValue(Result.Loading)
 
         try {
