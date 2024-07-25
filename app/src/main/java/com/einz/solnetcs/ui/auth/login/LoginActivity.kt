@@ -14,6 +14,7 @@ import com.einz.solnetcs.data.di.ViewModelFactory
 import com.einz.solnetcs.databinding.ActivityLoginBinding
 import com.einz.solnetcs.ui.auth.register.RegisterActivity
 import com.einz.solnetcs.data.State
+import com.einz.solnetcs.ui.auth.forgot.ForgotPasswordActivity
 import com.einz.solnetcs.ui.auth.register.NewRegisterActivity
 import com.einz.solnetcs.ui.auth.register.VerifyCustomerActivity
 import com.einz.solnetcs.ui.cust.customer.CustomerActivity
@@ -34,6 +35,10 @@ class LoginActivity : AppCompatActivity() {
         binding.btnLogin.isEnabled = false
 
         checkValid()
+
+        binding.tvForgotPassword.setOnClickListener{
+            startActivity(Intent(this, ForgotPasswordActivity::class.java))
+        }
 
         binding.btnLogin.setOnClickListener{
             val email = binding.tfEditEmail.text?.trim().toString()

@@ -26,6 +26,7 @@ class Repository(private val context: Context) {
     val registerSuccessLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
     val loginSuccessLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
     val loggedOutLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
+    val resetPasswordLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
 
     val changePasswordLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
     val changeAlamatLiveData: MutableLiveData<State<Boolean?>> = MutableLiveData()
@@ -191,6 +192,24 @@ class Repository(private val context: Context) {
                 }
         } catch (e: Exception) {
             userLiveData.postValue(State.Error(e.message ?: "Unknown error"))
+        }
+    }
+
+    // implement firebase password reset via email
+    suspend fun resetPassword(email: String) {
+        resetPasswordLiveData.postValue(State.Loading)
+
+        try {
+            firebaseAuth.sendPasswordResetEmail(email)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        resetPasswordLiveData.postValue(State.Success(true))
+                    } else {
+                        resetPasswordLiveData.postValue(State.Error(task.exception?.message ?: "Reset password failed"))
+                    }
+                }
+        } catch (e: Exception) {
+            resetPasswordLiveData.postValue(State.Error(e.message ?: "Unknown error"))
         }
     }
 

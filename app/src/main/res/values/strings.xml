@@ -35,4 +35,5 @@
     <string name="chatbot">Tanya kepada chatbot</string>
     <string name="lanjut">Verifikasi dan Lanjut</string>
     <string name="text_info_verify">Pastikan nomor telepon sama dengan nomor telepon saat pendaftaran langganan</string>
+    <string name="reset">Kirim Reset Password ke Email</string>
 </resources>

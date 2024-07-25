@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.einz.solnetcs.data.Repository
+import com.einz.solnetcs.ui.auth.forgot.ForgotPasswordViewModel
 import com.einz.solnetcs.ui.auth.login.LoginViewModel
 import com.einz.solnetcs.ui.auth.register.RegisterViewModel
 import com.einz.solnetcs.ui.cust.active_ticket.ActiveTicketViewModel
@@ -43,6 +44,9 @@ class ViewModelFactory private constructor(private val repository: Repository) :
             }
             modelClass.isAssignableFrom(InactiveTicketViewModel::class.java) -> {
                 return InactiveTicketViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(ForgotPasswordViewModel::class.java) -> {
+                return ForgotPasswordViewModel(repository) as T
             }
 
 
