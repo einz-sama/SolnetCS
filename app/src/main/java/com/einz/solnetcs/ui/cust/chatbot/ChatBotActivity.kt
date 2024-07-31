@@ -33,7 +33,7 @@ class ChatBotActivity : AppCompatActivity() {
 
         val isProblem = intent.getBooleanExtra("isProblem", false)
         if(isProblem) {
-            firstQuestion = problem_Question
+            firstQuestion = questionRestartModem
         }
         else {
             firstQuestion = greeting_Question

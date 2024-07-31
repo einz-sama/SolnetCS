@@ -2,9 +2,9 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_enabled="true">
         <shape android:shape="rectangle">
-            <corners android:radius="16dp" />
+            <corners android:radius="20dp" />
             <solid android:color="@color/white" />
-            <stroke android:width="4dp" android:color="@color/solnet_blue_300" />
+            <stroke android:width="2dp" android:color="@color/solnet_blue_800" />
         </shape>
     </item>
     <item android:state_enabled="false">
